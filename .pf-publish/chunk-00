@@ -1,0 +1,145 @@
+---
+layout: article
+lang: en
+title: "From Ybus to an Industrial-Grade Power Flow Solver"
+permalink: "/ac-power-flow-ybus-newton.html"
+seo_title: "From Ybus to an Industrial-Grade Power Flow Solver | Dehu Zou"
+description: "Derive AC power flow from Ybus to sparse Newton, then connect controls, limits, diagnostics, and reproducible verification to trustworthy engineering software."
+updated: "2026-09-08"
+---
+
+# From Ybus to an Industrial-Grade Power Flow Solver
+
+<p class="article-subtitle" style="font-size:1.2rem;line-height:1.55;color:#475467;">The mathematics, control logic, and verification behind trustworthy AC power flow.</p>
+
+<div class="article-meta" style="margin:16px 0 28px;color:#667085;font-size:.9rem;display:flex;gap:8px 18px;flex-wrap:wrap;"><span>Dehu Zou</span><span>Updated September 8, 2026</span><span>Technical essay · Derivation, executable verification, and production architecture</span></div>
+
+A power-flow program can converge to a very small residual and still answer the wrong engineering question. It may have used the wrong transformer convention, allowed a generator to supply unavailable reactive power, or solved a control configuration different from the one the operator intended. Newton's method cannot detect those mistakes merely by converging.
+
+The distance between a textbook calculation and a trustworthy solver is therefore not another clever iteration formula. It is the work required to make **network physics, control assumptions, numerical methods, and verification agree**.
+
+This article follows that work from the beginning. Topology and terminal models produce a sparse admittance operator. Voltage determines current through a linear map. Complex power introduces the familiar nonlinearity. Device controls determine which equations are enforced and which variables remain free. Newton's method then produces a sequence of sparse linear systems—not a sequence of explicit matrix inverses.
+
+The central idea is simple:
+
+> **Ybus describes the network. Controls define the problem. The solver must make both numerically and physically accountable.**
+
+The mathematics is classical, not a new power-flow algorithm. The contribution here is to connect the derivation to implementation decisions that are easy to miss when the subject is presented only as bus-by-bus trigonometric formulas. A small, executable example makes those connections testable.
+
+**Reading paths.** Start with [the network and equations](#network), go directly to [the Jacobian derivation](#jacobian), inspect [the reproducible example](#example), or use [the verification](#verification) and [industrial implementation](#architecture) sections as an implementation review. The appendices collect scalar derivatives and extensions without interrupting the main argument.
+
+<a id="scope"></a>
+
+## 1. Establish the model before choosing the solver
+
+The baseline is a **balanced, positive-sequence, steady-state AC network**, expressed in per unit. Branch parameters and discrete control settings are fixed during each inner Newton solve. Constant-power injections are the starting point; voltage-dependent loads and additional controls are introduced explicitly later.
+
+This scope matters. A positive-sequence model does not resolve phase unbalance, neutral behavior, harmonics, or electromagnetic transients. Those applications require different or larger device and network models. The architectural principles still transfer, but the equations cannot simply be relabeled.
+
+Let the system have $n$ buses and $\ell$ branches. Write
+
+$$
+V=m\odot e^{j\theta},\qquad m=|V|>0,
+$$
+
+where $V\in\mathbb C^n$, $m,\theta\in\mathbb R^n$, and angles are in **radians** unless explicitly stated otherwise. For a vector $a$, define $[a]=\operatorname{diag}(a)$. The symbols $\odot$ and $\oslash$ denote elementwise multiplication and division. An overbar denotes elementwise complex conjugation; $T$ denotes transpose, not conjugate transpose.
+
+Positive bus power means **net injection into the modeled network**. With consuming demand taken as positive,
+
+$$
+S^{\mathrm{spec}}=S_g-S_d.
+$$
+
+For fixed network admittance $Y\equiv Y_{\mathrm{bus}}$,
+
+$$
+\boxed{I=YV,\qquad S^{\mathrm{calc}}(V)=[V]\overline{YV}.}
+\tag{1}
+$$
+
+The network's voltage-to-current relation is linear. Constant-power boundary conditions make the voltage problem nonlinear because power multiplies voltage by conjugate current. Nonlinear loads and controls can add further dependencies.
+
+A shunt already included in $Y$ belongs on the network side of (1). Do not also subtract its power as a separate load. For $y_{\mathrm{sh}}=g+jb$, its absorbed complex power is $m^2(g-jb)$: a capacitive shunt has negative reactive absorption. This small bookkeeping decision affects residuals, generator outputs, and reported losses simultaneously.
+
+<a id="network"></a>
+
+## 2. Build Ybus from local terminal laws
+
+Network assembly has two distinct inputs: **connectivity** and **device behavior**. Keeping them separate makes the implementation both more general and easier to verify.
+
+### 2.1 The incidence-matrix starting point
+
+For reciprocal series branches, give each branch an arbitrary orientation and construct $D\in\mathbb R^{\ell\times n}$. Its row has $+1$ at the from bus and $-1$ at the to bus. If $y$ contains the series admittances,
+
+$$
+v_{\mathrm{br}}=DV,\qquad i_{\mathrm{br}}=[y]DV.
+$$
+
+Kirchhoff's current law then gives
+
+$$
+\boxed{Y=D^T[y]D+Y_{\mathrm{sh}}.}
+\tag{2}
+$$
+
+Reversing one arbitrary branch orientation changes two signs that cancel in (2). Connectivity is not a physical direction of power flow.
+
+Equation (2) is a useful starting point, but ordinary incidence stamping is not sufficient for general transformer models.
+
+### 2.2 The general two-terminal stamp
+
+For branch $k$, define currents as flowing **from each bus into the branch**:
+
+$$
+\begin{bmatrix}I_{f,k}\\I_{t,k}\end{bmatrix}
+=
+\begin{bmatrix}y_{ff,k}&y_{ft,k}\\y_{tf,k}&y_{tt,k}\end{bmatrix}
+\begin{bmatrix}V_{f,k}\\V_{t,k}\end{bmatrix}.
+\tag{3}
+$$
+
+The connection matrices $C_f,C_t\in\{0,1\}^{\ell\times n}$ select terminal voltages: $V_f=C_fV$ and $V_t=C_tV$. Collect the branch stamps into
+
+$$
+Y_f=[y_{ff}]C_f+[y_{ft}]C_t,\qquad
+Y_t=[y_{tf}]C_f+[y_{tt}]C_t.
+$$
+
+The global operator is
+
+$$
+\boxed{Y=C_f^TY_f+C_t^TY_t+Y_{\mathrm{sh}}.}
+\tag{4}
+$$
+
+This is the reusable pattern: local constitutive relations, connected and accumulated into a global sparse operator.
+
+For a standard $\pi$ branch, let $y_s=1/(r+jx)$, let $b_c$ be the **total** charging susceptance, and place the complex tap $t=\tau e^{j\phi}$ at the from terminal. With the internal branch-side voltage defined as $V_f/t$,
+
+$$
+\begin{aligned}
+y_{ff}&=\frac{y_s+jb_c/2}{|t|^2},
+&y_{ft}&=-\frac{y_s}{\overline t},\\
+y_{tf}&=-\frac{y_s}{t},
+&y_{tt}&=y_s+jb_c/2.
+\end{aligned}
+\tag{5}
+$$
+
+This convention agrees with MATPOWER's branch assembly [6]. Stating the internal voltage relation is important: “tap ratio” alone does not specify a model.
+
+With phase shifting, $y_{ft}$ and $y_{tf}$ need not be equal. Even without phase shifting, a complex-symmetric $Y$ is generally not Hermitian. Neither observation licenses a symmetric positive-definite solver for the real power-flow Jacobian.
+
+Branch availability also belongs here. An out-of-service branch contributes no series or charging stamp under the fully disconnected branch model. An open terminal that leaves equipment energized is a different model and must be represented accordingly.
+
+### 2.3 Recover the familiar power equations
+
+Let $Y_{ij}=G_{ij}+jB_{ij}$ and $\theta_{ij}=\theta_i-\theta_j$. Expanding (1) gives
+
+$$
+\begin{aligned}
+P_i&=m_i\sum_jm_j\left(G_{ij}\cos\theta_{ij}+B_{ij}\sin\theta_{ij}\right),\\
+Q_i&=m_i\sum_jm_j\left(G_{ij}\sin\theta_{ij}-B_{ij}\cos\theta_{ij}\right).
+\end{aligned}
+\tag{6}
+$$
