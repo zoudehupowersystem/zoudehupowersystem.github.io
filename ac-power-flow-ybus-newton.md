@@ -1,14 +1,14 @@
 ---
 layout: article
 lang: en
-title: "AC Power Flow from Ybus to Newton: Complex-Matrix Derivatives and Sparse Implementation"
+title: "From Ybus to an Industrial-Grade Power Flow Solver"
 permalink: "/ac-power-flow-ybus-newton.html"
-seo_title: "AC Power Flow from Ybus to Newton: Complex-Matrix Derivatives and Sparse Implementation | Dehu Zou"
+seo_title: "From Ybus to an Industrial-Grade Power Flow Solver | Dehu Zou"
 description: "A rigorous, implementation-oriented derivation of AC power flow from network topology and Ybus to Newton's method, complex-matrix Jacobians, PV/PQ controls, sparse factorization, limits, approximations, and verification."
 updated: "2026-09-08"
 ---
 
-# AC Power Flow from Ybus to Newton: Complex-Matrix Derivatives and Sparse Implementation
+# From Ybus to an Industrial-Grade Power Flow Solver
 
 <div class="article-meta" style="margin:-4px 0 24px;color:#667085;font-size:.9rem;display:flex;gap:8px 18px;flex-wrap:wrap;"><span>Author: Dehu Zou</span><span>Updated: 2026-09-08</span><span>Language: English</span></div>
 
