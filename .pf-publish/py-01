@@ -1,0 +1,120 @@
+    spec, _ = model.evaluate(abs(v))
+    mis = v * (net.ybus @ v).conj() - spec
+    return np.r_[mis.real[a], mis.imag[pq]]
+
+
+def jacobian(net: Network, model: Injections, v: ComplexArray,
+             a: NDArray[np.int64], pq: NDArray[np.int64]):
+    da, dm = derivatives(net.ybus, v)
+    _, dspec = model.evaluate(abs(v))
+    dm = dm - diags(dspec)
+    return bmat([[da[a][:, a].real, dm[a][:, pq].real],
+                 [da[pq][:, a].imag, dm[pq][:, pq].imag]], format="csc")
+
+
+def displaced(v: ComplexArray, a: NDArray[np.int64], pq: NDArray[np.int64],
+              dx: RealArray, alpha: float = 1.0) -> ComplexArray | None:
+    theta, m = np.angle(v), abs(v)
+    theta[a] += alpha*dx[:len(a)]
+    m[pq] += alpha*dx[len(a):]
+    if not np.isfinite(m).all() or np.any(m <= 1e-6):
+        return None
+    return m*np.exp(1j*theta)
+
+
+def solve(net: Network, model: Injections, v0: ComplexArray,
+          ref: list[int], pv: list[int], pq: list[int],
+          tol: float = 1e-11, max_steps: int = 30) -> tuple[ComplexArray, list[float]]:
+    """Fixed-mode Newton with sparse LU and squared-residual backtracking.
+
+    Input v0 contains the prescribed reference voltages and PV magnitudes.
+    The mode lists must partition all buses; every connected component must
+    have one reference. References are ideal balancing sources in this demo.
+    """
+    n = net.ybus.shape[0]
+    if sorted(ref+pv+pq) != list(range(n)):
+        raise ValueError("ref, pv, pq must partition the internal bus indices.")
+    if not np.isfinite(tol) or tol <= 0 or max_steps < 0:
+        raise ValueError("Invalid termination options.")
+    for array in (model.generation, model.demand):
+        if array.shape != (n,) or not np.isfinite(array).all():
+            raise ValueError("Invalid injection data.")
+    for z in (model.p_zip, model.q_zip):
+        if (z.shape != (n, 3) or not np.isfinite(z).all()
+                or (z < 0).any() or not np.allclose(z.sum(axis=1), 1)):
+            raise ValueError("ZIP rows must contain nonnegative fractions summing to one.")
+    graph = net.cf.T @ net.ct + net.ct.T @ net.cf
+    count, labels = connected_components(graph, directed=False)
+    for k in range(count):
+        if sum(labels[r] == k for r in ref) != 1:
+            raise ValueError("Every component requires exactly one reference in this demo.")
+    a, q = np.asarray(pv+pq, dtype=int), np.asarray(pq, dtype=int)
+    v = np.asarray(v0, complex).copy()
+    if v.shape != (n,) or not np.isfinite(v).all() or (abs(v) <= 1e-6).any():
+        raise ValueError("Invalid initial voltage vector.")
+    history: list[float] = []
+    for k in range(max_steps+1):
+        f = residual(net, model, v, a, q)
+        if not np.isfinite(f).all():
+            raise RuntimeError(f"Non-finite residual at step {k}.")
+        norm = float(np.linalg.norm(f, np.inf)) if f.size else 0.0
+        history.append(norm)
+        if norm <= tol:
+            return v, history
+        if k == max_steps:
+            break
+        try:
+            dx = splu(jacobian(net, model, v, a, q)).solve(-f)
+        except RuntimeError as exc:
+            raise RuntimeError(f"Sparse factorization failed at step {k}.") from exc
+        if not np.isfinite(dx).all():
+            raise RuntimeError("Non-finite Newton direction.")
+        phi, alpha = 0.5*float(f @ f), 1.0
+        accepted = False
+        for _ in range(25):
+            trial = displaced(v, a, q, dx, alpha)
+            if trial is not None:
+                ft = residual(net, model, trial, a, q)
+                if np.isfinite(ft).all() and 0.5*float(ft @ ft) <= phi*(1-2e-4*alpha):
+                    v, accepted = trial, True
+                    break
+            alpha *= 0.5
+        if not accepted:
+            raise RuntimeError(f"Line search failed at step {k}; residual={norm:.3e}.")
+    raise RuntimeError(f"Iteration limit reached; residual={history[-1]:.3e}.")
+
+
+def terminal_flows(net: Network, v: ComplexArray) -> tuple[ComplexArray, ComplexArray]:
+    return ((net.cf @ v) * (net.yf @ v).conj(),
+            (net.ct @ v) * (net.yt @ v).conj())
+
+
+def scalar_terminal_injections(net: Network, v: ComplexArray) -> ComplexArray:
+    """A separate terminal-law evaluation: no Ybus and no matrix Jacobian.
+
+    This path checks the implementation, not the correctness of the physical
+    assumptions or of the input data shared by both paths.
+    """
+    current = net.ysh*v
+    for e in net.branches:
+        tap = e.tap*np.exp(1j*np.deg2rad(e.shift_deg))
+        vf_internal = v[e.f]/tap
+        series = (vf_internal-v[e.t])/complex(e.r, e.x)
+        current[e.f] += (series + 0.5j*e.b*vf_internal)/tap.conjugate()
+        current[e.t] += -series + 0.5j*e.b*v[e.t]
+    return v*current.conj()
+
+
+def directional_error(net: Network, model: Injections, v: ComplexArray,
+                      a: NDArray[np.int64], pq: NDArray[np.int64]) -> dict[str, float]:
+    rng = np.random.default_rng(20260908)
+    p = rng.normal(size=len(a)+len(pq))
+    p /= np.linalg.norm(p)
+    jp = jacobian(net, model, v, a, pq) @ p
+    result = {}
+    for h in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7):
+        vp, vm = displaced(v, a, pq, p, h), displaced(v, a, pq, p, -h)
+        if vp is None or vm is None:
+            raise AssertionError("Invalid finite-difference test point.")
+        fd = (residual(net, model, vp, a, pq)-residual(net, model, vm, a, pq))/(2*h)
+        result[f"{h:.0e}"] = float(np.linalg.norm(fd-jp, np.inf)/max(1., np.linalg.norm(jp, np.inf)))
