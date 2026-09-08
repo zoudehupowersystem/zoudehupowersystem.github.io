@@ -1,0 +1,124 @@
+The following checklist summarizes the implementation standard implied by this article.
+
+| Layer | Production question | Minimum evidence before calling the solver industrial-grade |
+|---|---|---|
+| Model scope | Are all represented controls and limits explicit? | Documented device equations, modes, ownership, limits, and unsupported cases. |
+| Data | Can bad or ambiguous cases be rejected before iteration? | Base/topology/reference validation, stable indexing, parameter diagnostics. |
+| Equations | Is the solved residual the declared physical/control problem? | Explicit state/equation maps and derivative tests for all active continuous dependencies. |
+| Nonlinear solve | Can difficult cases fail predictably rather than mysteriously? | Warm starts, safeguards, bounded recovery hierarchy, classified termination. |
+| Linear algebra | Does performance scale with sparse structure? | Sparse assembly/factorization, ordering, cache rules, memory and timing instrumentation. |
+| Controls | Are limits and discrete devices coordinated? | Active-set/state-machine logic, hysteresis, priorities, cycling protection, event logs. |
+| Results | Are reported flows and outputs consistent with the solved model? | Same terminal/sign conventions, conservation checks, recovered limits and reserves. |
+| Diagnostics | Can an engineer identify the dominant reason for failure or stress? | Mismatch ranking, control history, island status, factorization warnings, final violation report. |
+| Verification | Can changes be defended release after release? | Regression corpus, independent comparisons, derivative tests, expected failure cases. |
+| Workloads | Does the design exploit repeated related solves? | Validity-aware caching, warm starts, safe parallel scenarios, workload-level benchmarks. |
+| Architecture | Can models and numerical backends evolve independently? | Stable module interfaces, versioned model snapshots, explicit dependency invalidation. |
+| Provenance | Can a result be reconstructed? | Case/model/options/backend versions, tolerances, initialization, mode history, warnings. |
+
+The key engineering principle is therefore stronger than “use Newton with sparse matrices”:
+
+> **Industrial quality comes from making the model, active controls, numerical method, sparse computation, diagnostics, verification, and software architecture obey one another's contracts.**
+
+The nonlinear equations remain the mathematical center of the program, but the surrounding systems determine whether those equations are the right ones, whether they are solved predictably, and whether anyone can trust the answer afterward.
+
+## Closing perspective
+
+The matrix view of power flow is more than compact notation. It reveals a chain of responsibilities:
+
+$$
+\begin{gathered}
+\text{topology and terminal laws}\longrightarrow Y_{\mathrm{bus}}\longrightarrow I=YV\\
+\longrightarrow S=[V]\overline I\longrightarrow
+\text{controls and residuals}\longrightarrow
+\text{Jacobians and sparse solves}.
+\end{gathered}
+$$
+
+That chain also reveals where errors enter. A wrong terminal convention corrupts the network operator. A wrong control assumption changes the problem. An incomplete derivative changes the iteration. A weak acceptance test changes what “solved” means.
+
+Getting the Jacobian right is essential. Keeping every layer consistent with it is what turns a correct calculation into trustworthy engineering software.
+
+**The goal is not merely a voltage vector. It is a voltage vector whose equations, controls, limits, and numerical evidence can all be explained.**
+
+---
+
+<a id="appendix-a"></a>
+
+## Appendix A. Scalar Jacobian formulas for independent checks
+
+For fixed $Y$ and constant specifications, let $J_{\mathrm{full}}=[H\ N;\ M\ L]$ as in (13). For $i\ne j$,
+
+$$
+\begin{aligned}
+H_{ij}&=m_im_j(G_{ij}\sin\theta_{ij}-B_{ij}\cos\theta_{ij}),\\
+N_{ij}&=m_i(G_{ij}\cos\theta_{ij}+B_{ij}\sin\theta_{ij}),\\
+M_{ij}&=-m_im_j(G_{ij}\cos\theta_{ij}+B_{ij}\sin\theta_{ij}),\\
+L_{ij}&=m_i(G_{ij}\sin\theta_{ij}-B_{ij}\cos\theta_{ij}).
+\end{aligned}
+$$
+
+The diagonal terms are
+
+$$
+\begin{aligned}
+H_{ii}&=-Q_i-B_{ii}m_i^2,&
+N_{ii}&=P_i/m_i+G_{ii}m_i,\\
+M_{ii}&=P_i-G_{ii}m_i^2,&
+L_{ii}&=Q_i/m_i-B_{ii}m_i.
+\end{aligned}
+$$
+
+Here $P_i,Q_i$ are calculated **net network injections**, not generator outputs. These expressions follow by differentiating (6), and they agree with (11)–(13). Add the specified-injection derivative corrections from Section 5 before interpreting them as the Jacobian of a more general residual.
+
+<a id="appendix-b"></a>
+
+## Appendix B. The same differential supports other formulations
+
+For Cartesian voltage $V=v_r+jv_i$, equation (10) gives
+
+$$
+\frac{\partial S}{\partial v_r}=[\overline I]+[V]\overline Y,\qquad
+\frac{\partial S}{\partial v_i}=j[\overline I]-j[V]\overline Y.
+$$
+
+The appropriate real equations and controls must still be supplied. For example, a PV magnitude constraint can be written $v_{r,i}^2+v_{i,i}^2-(m_i^\star)^2=0$ when those Cartesian components are retained as independent variables. Changing coordinates preserves the represented physical solutions, but it need not preserve Newton's trajectory away from a solution. Power-balance and current-balance formulations similarly require a consistent treatment of their unknown device outputs [6,7].
+
+For branch-flow derivatives, the same product rule yields
+
+$$
+dS_f=[\overline I_f]C_f\,dV+[V_f]\overline{Y_f}\,d\overline V
+$$
+
+for fixed branch matrices, with an analogous expression at the to end.
+
+Finally, consider a parameterized fixed-mode problem $F(x,\lambda)=0$. At a solution with nonsingular $J$,
+
+$$
+J\frac{dx}{d\lambda}=-\frac{\partial F}{\partial\lambda}.
+$$
+
+Sensitivities therefore reuse a linear solve at the converged state rather than requiring an explicit inverse. They are local to the current smooth mode. At a limit transition, the equation set and its sensitivities may change; near a singularity, ordinary implicit-function sensitivities may cease to be well defined. This is where power flow connects naturally to continuation, optimization, and security analysis—provided its modeling boundaries remain visible.
+
+<a id="references"></a>
+
+## References and implementation sources
+
+1. W. F. Tinney and C. E. Hart, “Power Flow Solution by Newton's Method,” *IEEE Transactions on Power Apparatus and Systems*, vol. PAS-86, no. 11, pp. 1449–1460, 1967. DOI: [10.1109/TPAS.1967.291823](https://doi.org/10.1109/TPAS.1967.291823).
+
+2. W. F. Tinney and J. W. Walker, “Direct Solutions of Sparse Network Equations by Optimally Ordered Triangular Factorization,” *Proceedings of the IEEE*, vol. 55, no. 11, pp. 1801–1809, 1967. DOI: [10.1109/PROC.1967.6011](https://doi.org/10.1109/PROC.1967.6011).
+
+3. B. Stott and O. Alsaç, “Fast Decoupled Load Flow,” *IEEE Transactions on Power Apparatus and Systems*, vol. PAS-93, no. 3, pp. 859–869, 1974. DOI: [10.1109/TPAS.1974.293985](https://doi.org/10.1109/TPAS.1974.293985).
+
+4. R. D. Zimmerman, “AC Power Flows, Generalized OPF Costs and their Derivatives using Complex Matrix Notation,” *MATPOWER Technical Note 2*, February 2010; revision 7, June 20, 2019. See especially Sections 3–5. [Technical note](https://matpower.org/docs/TN2-OPF-Derivatives.pdf).
+
+5. R. D. Zimmerman, C. E. Murillo-Sánchez, and R. J. Thomas, “MATPOWER: Steady-State Operations, Planning, and Analysis Tools for Power Systems Research and Education,” *IEEE Transactions on Power Systems*, vol. 26, no. 1, pp. 12–19, 2011. DOI: [10.1109/TPWRS.2010.2051168](https://doi.org/10.1109/TPWRS.2010.2051168).
+
+6. MATPOWER 7.1 source reference: [`makeYbus`](https://matpower.org/docs/ref/matpower7.1/lib/makeYbus.html), [`dSbus_dV`](https://matpower.org/docs/ref/matpower7.1/lib/dSbus_dV.html), [`newtonpf`](https://matpower.org/docs/ref/matpower7.1/lib/newtonpf.html), and [`makeSbus`](https://matpower.org/docs/ref/matpower7.1/lib/makeSbus.html). Version-specific links are used to make the cited implementation inspectable, not to identify the latest release.
+
+7. MATPOWER User's Manual, Section 4.1, [“AC Power Flow”](https://matpower.app/manual/matpower/ACPowerFlow.html), including reduced variables, alternative formulations, and reactive-limit enforcement.
+
+8. V. Ajjarapu and C. Christy, “The Continuation Power Flow: A Tool for Steady State Voltage Stability Analysis,” *IEEE Transactions on Power Systems*, vol. 7, no. 1, pp. 416–423, 1992. [IEEE record](https://ieeexplore.ieee.org/document/141737/).
+
+9. SUNDIALS, KINSOL documentation, [“Mathematical Considerations”](https://sundials.readthedocs.io/en/latest/kinsol/Mathematics_link.html), especially scaling, globalization, and nonlinear stopping criteria. Consult the documentation matching the deployed version when implementing these policies.
+
+10. SciPy reference documentation: [`scipy.sparse.linalg.splu`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.splu.html) and [`scipy.optimize.root`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.root.html). The companion's tested package versions are recorded with its numerical results.
