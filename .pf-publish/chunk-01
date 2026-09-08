@@ -1,0 +1,144 @@
+
+The matrix and scalar forms are the same equations. Matrix notation exposes composition and sparsity; scalar notation remains useful for hand calculations and independent checks.
+
+<a id="controls"></a>
+
+## 3. Bus types are reduced control equations
+
+A bus is a connection point. Its classification as PQ, PV, or reference is a consequence of the connected devices and the equations retained after elimination—not an immutable physical property.
+
+For the classical local-control model:
+
+| Mode | Prescribed quantities | Quantities determined by the solution |
+|---|---|---|
+| PQ | Net $P$ and $Q$ | Angle $\theta$ and magnitude $m$ |
+| PV | Net $P$ and voltage magnitude $m$ | Angle $\theta$ and net $Q$ |
+| Reference/slack | Angle $\theta$ and magnitude $m$ | Net $P$ and $Q$ |
+
+At a PV bus, the generator's reactive output is not generally the net bus injection. With a local load and no other explicit injection, $Q_g=Q^{\mathrm{calc}}+Q_d$. With several devices, the allocation must follow their actual control and sharing rules.
+
+A PV equation is valid only while sufficient regulating capability remains. A generator's reactive limit is therefore more than a number to check after convergence: it can change the equations to be solved. The classical formulation and its reduced variables are described in MATPOWER's power-flow documentation [7].
+
+### 3.1 Why an angle reference is unavoidable
+
+For a uniform phase rotation $V'=e^{j\gamma}V$,
+
+$$
+[V']\overline{YV'}=[V]\overline{YV}.
+$$
+
+Thus absolute angle cannot be identified from the power equations of a floating synchronous island. Differentiating this invariance gives the useful identity
+
+$$
+\boxed{S_\theta\mathbf 1=0.}
+\tag{7}
+$$
+
+Each independently rotating island contributes such a direction. Fixing one angle per island removes this freedom in the classical formulation.
+
+Notice what this argument does **not** require: $Y$ itself need not be singular. Shunts may make $Y$ invertible while the power equations still retain their uniform-angle invariance. Confusing these two singularity questions leads to misleading diagnostics.
+
+A reference also does not create an energy source. Every energized island needs a modeled balancing mechanism and appropriate device capability. Renaming an isolated load bus “slack” silently introduces an ideal source rather than repairing the original case.
+
+### 3.2 The reduced state and residual
+
+Let $\mathcal A$ contain all non-reference buses, and let $\mathcal Q$ contain the PQ buses. Fix an ordering and preserve it in every residual, Jacobian, and state update:
+
+$$
+x=\begin{bmatrix}\theta_{\mathcal A}\\m_{\mathcal Q}\end{bmatrix},\qquad
+F(x)=\begin{bmatrix}
+P^{\mathrm{calc}}_{\mathcal A}-P^{\mathrm{spec}}_{\mathcal A}\\
+Q^{\mathrm{calc}}_{\mathcal Q}-Q^{\mathrm{spec}}_{\mathcal Q}
+\end{bmatrix}.
+\tag{8}
+$$
+
+For one reference bus, there are $n_{\mathrm{PV}}+2n_{\mathrm{PQ}}$ equations and unknowns. The omitted balance equations have not disappeared physically: after solving, they determine the outputs of the balancing and voltage-regulating devices.
+
+Throughout this article, **residual means calculated minus specified**. Newton therefore solves $J\Delta x=-F$. Using the opposite convention is equally valid; mixing the two is not.
+
+<a id="jacobian"></a>
+
+## 4. Derive the Jacobian once, in complex form
+
+The four real Jacobian blocks follow from one product rule. The derivation below is a real differential of a complex-valued function; it does not assume holomorphic complex analysis. It is the same derivative structure documented in MATPOWER Technical Note 2 [4].
+
+### 4.1 Differentiate voltage
+
+Define the unit phasor $u=V\oslash m=e^{j\theta}$. Since angle perturbations move a phasor tangentially and magnitude perturbations move it radially,
+
+$$
+dV=j[V]d\theta+[u]dm,\qquad
+d\overline V=-j[\overline V]d\theta+[\overline u]dm.
+\tag{9}
+$$
+
+### 4.2 Differentiate complex power
+
+For $I=YV$ with fixed $Y$,
+
+$$
+\begin{aligned}
+dS
+&=[dV]\overline I+[V]d\overline I\\
+&=[\overline I]dV+[V]\overline Y\,d\overline V.
+\end{aligned}
+\tag{10}
+$$
+
+Substituting (9) yields
+
+$$
+dS=S_\theta d\theta+S_mdm,
+$$
+
+where
+
+$$
+\boxed{S_\theta=j[V]\left([\overline I]-\overline Y[\overline V]\right)}
+\tag{11}
+$$
+
+and
+
+$$
+\boxed{S_m=[\overline I][u]+[V]\overline Y[\overline u].}
+\tag{12}
+$$
+
+Two complex matrices now contain every polar derivative. Their real and imaginary parts give
+
+$$
+J_{\mathrm{full}}=
+\begin{bmatrix}
+\operatorname{Re}S_\theta&\operatorname{Re}S_m\\
+\operatorname{Im}S_\theta&\operatorname{Im}S_m
+\end{bmatrix}
+=\begin{bmatrix}H&N\\M&L\end{bmatrix}.
+\tag{13}
+$$
+
+For constant specifications, select the rows and columns associated with (8):
+
+$$
+\boxed{J=
+\begin{bmatrix}
+(\operatorname{Re}S_\theta)_{\mathcal A,\mathcal A}&
+(\operatorname{Re}S_m)_{\mathcal A,\mathcal Q}\\
+(\operatorname{Im}S_\theta)_{\mathcal Q,\mathcal A}&
+(\operatorname{Im}S_m)_{\mathcal Q,\mathcal Q}
+\end{bmatrix}.}
+\tag{14}
+$$
+
+This is the conventional polar Newton Jacobian, not an approximation or an alternative algorithm.
+
+### 4.3 What the notation buys—and what it does not
+
+Equations (11)–(14) separate differentiation from indexing. That makes it possible to test the full complex derivatives before testing the reduced real system. It also exposes row and column scaling operations that can be implemented without dense diagonal matrices.
+
+It does **not** improve convergence by itself. With identical equations, states, active sets, and exact arithmetic, equivalent scalar and matrix implementations produce the same Newton direction. In floating-point arithmetic, differences can arise from assembly, ordering, pivoting, and conditioning; near a control threshold, even small differences can alter a subsequent mode decision.
+
+The right comparison is therefore an end-to-end comparison under matched assumptions—not a claim that vector notation has a larger convergence region.
+
+<a id="complete-residual"></a>
