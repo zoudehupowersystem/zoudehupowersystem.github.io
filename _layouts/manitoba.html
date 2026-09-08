@@ -9,11 +9,19 @@
   <title>{{ seo_title | escape }}</title>
   <meta name="description" content="{{ seo_description | escape }}" />
   <meta name="author" content="Dehu Zou / 邹德虎" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <link rel="me" href="https://orcid.org/0000-0002-3359-0145" />
   <link rel="canonical" href="https://zoudehupowersystem.github.io{{ page.url }}" />
   <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="邹德虎 · Dehu Zou" />
   <meta property="og:title" content="{{ seo_title | escape }}" />
   <meta property="og:description" content="{{ seo_description | escape }}" />
   <meta property="og:url" content="https://zoudehupowersystem.github.io{{ page.url }}" />
+  <meta property="og:image" content="https://zoudehupowersystem.github.io/zoudehu.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{ seo_title | escape }}" />
+  <meta name="twitter:description" content="{{ seo_description | escape }}" />
+  <meta name="twitter:image" content="https://zoudehupowersystem.github.io/zoudehu.jpg" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -32,7 +40,7 @@
       "name": "邹德虎",
       "alternateName": "Dehu Zou",
       "url": "https://zoudehupowersystem.github.io/",
-      "sameAs": ["https://github.com/zoudehupowersystem"]
+      "sameAs": ["https://orcid.org/0000-0002-3359-0145", "https://github.com/zoudehupowersystem"]
     },
     "publisher": {
       "@type": "Person",
