@@ -1,0 +1,11 @@
+url: "https://zoudehupowersystem.github.io"
+baseurl: ""
+title: "邹德虎 Dehu Zou｜电力系统仿真、调度自动化与工业软件研发"
+lang: zh-CN
+timezone: Asia/Shanghai
+encoding: utf-8
+markdown: kramdown
+kramdown:
+  input: GFM
+exclude:
+  - README.md

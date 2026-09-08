@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: 'zh-CN' }}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% assign seo_title = page.seo_title | default: page.title %}
+  {% capture fallback_description %}{{ content | strip_html | strip_newlines | replace: '  ', ' ' | truncate: 180 }}{% endcapture %}
+  {% assign seo_description = page.description | default: fallback_description | strip %}
+  <title>{{ seo_title | escape }}</title>
+  <meta name="description" content="{{ seo_description | escape }}" />
+  <meta name="author" content="Dehu Zou / 邹德虎" />
+  <link rel="canonical" href="https://zoudehupowersystem.github.io{{ page.url }}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="{{ seo_title | escape }}" />
+  <meta property="og:description" content="{{ seo_description | escape }}" />
+  <meta property="og:url" content="https://zoudehupowersystem.github.io{{ page.url }}" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {{ page.title | jsonify }},
+    "description": {{ seo_description | jsonify }},
+    {% if page.updated %}"dateModified": {{ page.updated | jsonify }},{% endif %}
+    "url": {{ 'https://zoudehupowersystem.github.io' | append: page.url | jsonify }},
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": {{ 'https://zoudehupowersystem.github.io' | append: page.url | jsonify }}
+    },
+    "author": {
+      "@type": "Person",
+      "@id": "https://zoudehupowersystem.github.io/#dehu-zou",
+      "name": "邹德虎",
+      "alternateName": "Dehu Zou",
+      "url": "https://zoudehupowersystem.github.io/",
+      "sameAs": ["https://github.com/zoudehupowersystem"]
+    },
+    "publisher": {
+      "@type": "Person",
+      "@id": "https://zoudehupowersystem.github.io/#dehu-zou",
+      "name": "邹德虎 / Dehu Zou"
+    },
+    "inLanguage": {{ page.lang | default: 'zh-CN' | jsonify }}
+  }
+  </script>
+</head>
+<body>
+{{ content }}
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zoudehupowersystem.github.io/sitemap.xml
