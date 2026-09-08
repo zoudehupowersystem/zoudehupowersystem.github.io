@@ -1,0 +1,113 @@
+name: Migrate personal site to root
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/migrate-site.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout new root site
+        uses: actions/checkout@v4
+
+      - name: Copy current personal site
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/zoudehupowersystem/zoudehu.github.io.git /tmp/oldsite
+          rsync -a --exclude='.git' --exclude='.nojekyll' /tmp/oldsite/ ./
+          rm -f MIGRATION_INIT .nojekyll
+
+      - name: Rewrite URLs and configure root-site SEO
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          old = 'https://zoudehupowersystem.github.io/zoudehu.github.io'
+          new = 'https://zoudehupowersystem.github.io'
+          text_exts = {'.html', '.md', '.txt', '.xml', '.yml', '.yaml', '.json', '.css', '.js'}
+
+          changed = []
+          for p in Path('.').rglob('*'):
+              if not p.is_file() or '.git' in p.parts:
+                  continue
+              if p.suffix.lower() not in text_exts and p.name not in {'README.md'}:
+                  continue
+              try:
+                  s = p.read_text(encoding='utf-8')
+              except UnicodeDecodeError:
+                  continue
+              ns = s.replace(old, new)
+              if ns != s:
+                  p.write_text(ns, encoding='utf-8')
+                  changed.append(str(p))
+
+          print('Rewritten files:', len(changed))
+          for x in changed:
+              print(' -', x)
+          PY
+
+          cat > _config.yml <<'EOF'
+          url: "https://zoudehupowersystem.github.io"
+          baseurl: ""
+          title: "邹德虎 Dehu Zou｜电力系统仿真、调度自动化与工业软件研发"
+          lang: zh-CN
+          timezone: Asia/Shanghai
+          encoding: utf-8
+          markdown: kramdown
+          kramdown:
+            input: GFM
+          exclude:
+            - README.md
+          EOF
+
+          cat > robots.txt <<'EOF'
+          User-agent: *
+          Allow: /
+
+          Sitemap: https://zoudehupowersystem.github.io/sitemap.xml
+          EOF
+
+          # The migration workflow is one-shot and removes itself after success.
+          rm -f .github/workflows/migrate-site.yml
+
+      - name: Validate migrated site
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f index.html
+          test -f sitemap.xml
+          test -f robots.txt
+          test -f _layouts/article.html
+          test -f zoudehu.jpg
+          test -f weixin.jpg
+          test ! -f .nojekyll
+
+          if grep -R --exclude-dir=.git --exclude='*.png' --exclude='*.jpg' --exclude='*.jpeg' --exclude='*.gif' -n 'https://zoudehupowersystem.github.io/zoudehu.github.io' .; then
+            echo 'Old absolute site URL remains in text files.' >&2
+            exit 1
+          fi
+
+          grep -q '<loc>https://zoudehupowersystem.github.io/</loc>' sitemap.xml
+          grep -q 'Sitemap: https://zoudehupowersystem.github.io/sitemap.xml' robots.txt
+          grep -q 'rel="canonical" href="https://zoudehupowersystem.github.io/' index.html
+          grep -q 'https://zoudehupowersystem.github.io{{ page.url }}' _layouts/article.html
+
+      - name: Commit migrated root site
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Migrate personal site to root GitHub Pages and update SEO URLs'
+          git push origin main
