@@ -1,0 +1,145 @@
+| Are the control modes consistent? | Prescribed quantities, limits, and mode-selection rules agree with recovered outputs. |
+| Is the operating point acceptable? | Relevant voltage, thermal, generation, and equipment constraints pass their checks. |
+| Is the system dynamically stable? | A suitable dynamic model and stability analysis support that conclusion. |
+
+A power flow can converge with a thermal overload. It can also converge at an equilibrium whose dynamic stability has not been assessed. “Converged,” “acceptable,” and “stable” should never be interchangeable status labels.
+
+### Where fast-decoupled and DC power flow fit
+
+Fast-decoupled power flow exploits regimes where $P$–$\theta$ and $Q$–$m$ couplings dominate the cross-couplings, typically in predominantly inductive transmission networks with moderate angle differences and near-nominal voltages. It uses simplified fixed matrices that can be factored once for a fixed configuration [3]. It still iterates toward AC mismatch equations; its approximations concern the update strategy, not a claim that reactive power disappears.
+
+DC power flow instead approximates the model itself: it retains a linear active-power/angle relation while omitting reactive-power and voltage-magnitude behavior. Transformer taps and phase shifts still require consistent treatment. A successful DC solution does not establish AC voltage or reactive feasibility.
+
+The two methods are useful for different reasons. Their value comes from matching an approximation to the study—not from being universally faster or more reliable substitutes for full AC analysis.
+
+<a id="verification"></a>
+
+## 11. Make verification part of the solver, not its final demonstration
+
+The three-bus example illustrates a verification process. A defensible codebase turns that process into a permanent test system.
+
+### 11.1 Test derivatives with the active set frozen
+
+For a normalized real direction $p$, compare $J(x)p$ with
+
+$$
+d_h=\frac{F(x+hp)-F(x-hp)}{2h},\qquad
+\varepsilon(h)=\frac{\|d_h-Jp\|_\infty}{\max(1,\|Jp\|_\infty)}.
+\tag{23}
+$$
+
+Sweep $h$ over several orders of magnitude. For a smooth residual, a centered difference exhibits a truncation-error region before floating-point cancellation takes over. One arbitrary step size is a weaker test than the error trend.
+
+Freeze discrete states, bus classifications, and active constraints during the perturbation. Otherwise the test crosses between different residual functions and no longer checks the advertised fixed-mode Jacobian. Include voltage-dependent specifications in both the analytic and perturbed evaluations.
+
+Do not apply the standard complex-step recipe blindly to a black-box implementation containing conjugation, absolute values, and real/imaginary extraction. Those operations do not provide the holomorphic extension that recipe assumes. Centered differences in real state variables, or automatic differentiation of an explicitly real computational graph, avoid that ambiguity.
+
+### 11.2 Test identities and model boundaries
+
+Use the angle-invariance identity (7), terminal-current assembly, and the power identity (22). Include cases with reversed branch descriptions under correctly transformed parameters, parallel branches, phase shifters, shunts, and bus permutations. Exercise invalid data and island detection before testing elaborate nonlinear recovery strategies.
+
+These tests should be layered. Recomputing branch powers from the same incorrect stamp can satisfy a global balance identity perfectly. A separately implemented terminal relation, hand-checkable cases, and an external solver each help address different shared-error risks.
+
+### 11.3 Compare like with like
+
+MATPOWER is a useful open reference [5–7]. Before comparing results, align bases, transformer conventions, load models, slack participation, voltage targets, limits, and controller settings. Align the angle reference independently within each island. Compare branch flows, generator outputs, and final control modes—not only bus-voltage magnitudes.
+
+A discrepancy between two packages is not automatically a numerical bug. Different defaults may define different problems. Record both configurations before interpreting the difference.
+
+### 11.4 Publish the limits of the evidence
+
+A regression corpus should span ordinary, stressed, mode-switching, disconnected, and intentionally invalid cases. For performance studies, state the hardware, software versions, tolerances, initialization, model features, warm/cold-start policy, and timing boundary. Report failures and fallback usage alongside successful runtimes.
+
+Passing public transmission cases does not establish correctness for unbalanced distribution controls or converter-specific limits. Verification claims should be no broader than the tested model and workload.
+
+<a id="architecture"></a>
+
+## 12. Industrial-grade implementation: features, principles, and architecture
+
+The derivation above is enough to build a correct Newton kernel. It is **not** enough to build an industrial power-flow program.
+
+In production work, the solver is only one layer in a larger numerical system. The program must decide what equations are active, reject or repair invalid network representations before iteration, coordinate continuous and discrete controls, preserve sparse structure, explain failure, recover all reported quantities from the same model, and remain verifiable as the codebase evolves. A solver that is fast but opaque is difficult to trust; a solver that is mathematically elegant but fragile under real data is difficult to use.
+
+For this article, *industrial-grade* means a program designed around the following properties:
+
+| Property | Concrete requirement | Typical failure when omitted |
+|---|---|---|
+| Model fidelity | Device equations, controls, limits, and mode transitions match the declared study scope. | The program converges to the wrong engineering problem. |
+| Data integrity | Topology, bases, status, references, and parameters are validated before nonlinear iteration. | Singular systems, implausible flows, or failures misdiagnosed as “Newton problems.” |
+| Numerical robustness | The nonlinear method has warm starts, safeguards, bounded recovery policies, and classified termination. | Easy cases solve; stressed or imperfect cases fail unpredictably. |
+| Sparse performance | Assembly, ordering, factorization, memory, and structural reuse are engineered as first-class subsystems. | Runtime and memory scale poorly even though the equations are sparse. |
+| Control coordination | Limits and discrete devices are handled by explicit state machines or active-set logic. | Chattering, contradictory controls, or post-solve clipping that violates the equations. |
+| Diagnostics | Every solve exposes residuals, mode changes, limiting devices, factorization status, and reason for termination. | Engineers receive only “did not converge.” |
+| Verification | Derivatives, identities, benchmark comparisons, regression cases, and failure behavior are continuously tested. | Refactors silently change results or break rare control modes. |
+| Reproducibility | Results carry model/options/version provenance and deterministic policies where practical. | A result cannot be reconstructed or audited later. |
+| Extensibility | Data, physics, controls, nonlinear strategy, linear algebra, and reporting are separated by stable interfaces. | Adding one device model forces changes throughout the solver. |
+
+These are not cosmetic software qualities. Each one changes whether the final voltage vector is defensible.
+
+### 12.1 Three levels of power-flow implementation maturity
+
+Programs that solve the same Newton equations can still differ radically in engineering quality. A useful maturity model has three levels. The boundaries are not absolute, but the distinction is valuable because it separates *knowing the equations* from *engineering a sustainable numerical product*.
+
+| Level | Typical implementation | What it gets right | Where it reaches its limit |
+|---|---|---|---|
+| I. Formula translation | Bus-by-bus loops that mirror textbook equations; often dense or only lightly optimized. | Excellent for learning, independent checks, and small prototypes. | Jacobian code becomes repetitive; sparse structure, controls, diagnostics, and large workloads are secondary. |
+| II. Traditional industrialization | Custom sparse storage, ordering, factorization interfaces, extensive special-case control logic, and many performance-oriented code paths. | Can be fast, feature-rich, and proven on real networks. | Physics, sparse kernels, control state, and application data easily become entangled; maintenance cost grows rapidly as features accumulate. |
+| III. Modern industrial architecture | The application layer expresses topology, devices, controls, residuals, derivatives, and sparse structure; mature numerical libraries execute generic linear-algebra kernels behind replaceable interfaces. | Preserves industrial performance while making models, solvers, controls, and backends independently testable and evolvable. | Requires disciplined abstractions, explicit cache dependencies, and strong regression tests; abstraction without measurement can still waste performance. |
+
+The third level is not a return to a classroom script, nor does it mean that every operation should literally be written as one high-level matrix expression. It means that the program should avoid reimplementing generic numerical machinery when a mature library can do it better, while keeping domain-specific work—network stamping, equation selection, limit logic, controller coordination, diagnostics—in explicit engineering code.
+
+This is where **matrix thinking** becomes a software principle rather than a notation preference. The application code should translate the power-system problem into algebraic objects that optimized kernels understand: sparse matrices, index maps, residual vectors, block structures, factorizations, and batched right-hand sides. In a C++ implementation, for example, modern language mechanisms can be used to pass residual evaluators, device contributions, callbacks, or policies without forcing every module to know every other module. The exact mechanism is secondary; reducing unnecessary coupling is the point.
+
+The distinction also corrects a common misconception. Rewriting the same Jacobian with matrix expressions does **not** enlarge Newton's mathematical convergence region. Its engineering advantages are different: clearer structure, fewer hand-coded element formulas, easier derivative testing, better access to high-performance sparse libraries, and a more maintainable path from derivation to implementation. Specialized kernels, loop-level optimization, SIMD, or GPU code may still be appropriate underneath that architecture when measurement justifies them.
+
+For a flagship industrial solver, the target is therefore not merely Level II—"many optimized lines of code"—but Level III: **a compact and explicit domain model driving replaceable high-performance numerical machinery, with every control transition and cache dependency visible.** The remaining subsections make that statement concrete.
+
+### 12.2 Model coverage must follow control semantics
+
+A production program needs more than lines, transformers, constant-power loads, and ideal PV generators. It must represent the steady-state behavior that materially changes the solved operating point for the intended application. Depending on scope, that can include:
+
+- transmission lines with charging and explicit terminal status;
+- off-nominal and phase-shifting transformers;
+- bus shunts and switched shunts;
+- multiple generators at one bus;
+- generator reactive capability and active-power limits;
+- local and remote voltage regulation;
+- reactive-power sharing among regulating devices;
+- distributed active-power balancing;
+- tap-changing transformers with deadbands and discrete positions;
+- ZIP or other voltage-dependent demand models;
+- HVDC, FACTS, and inverter-based resources when their controls matter to the study.
+
+The important design principle is not to accumulate device types as special cases. A device model should make its **equations, unknowns, controlled quantities, free quantities, limits, derivatives, and allowed mode transitions** explicit.
+
+For example, a regulating generator should not merely carry a flag named `PV`. Its model should establish which voltage is controlled, what active power is prescribed, how required reactive power is recovered, what capability is available, how sharing works if several devices regulate the same quantity, and what happens when the active set changes. The classical PV bus is then a reduced consequence of those rules.
+
+This becomes essential when controls interact. Two devices cannot independently enforce inconsistent targets on the same controlled variable. A remote-voltage controller, a local generator AVR abstraction, an LTC, and a switched shunt may all influence one voltage region. The program therefore needs explicit **control ownership, coordination, priority, and conflict resolution** rather than relying on whichever object happens to update first.
+
+A useful internal contract for each device family is conceptually:
+
+```text
+network_contribution(state, mode)       -> sparse stamps / injections
+residual_contribution(state, mode)      -> equations
+jacobian_contribution(state, mode)      -> derivatives
+recover_outputs(solution, mode)         -> P, Q, currents, flows, reserves
+check_limits(solution, mode)            -> margins / violations
+propose_transition(solution, mode)      -> optional next mode
+structural_dependencies(mode)           -> what caches become invalid
+```
+
+The exact API can differ. The principle should not: the physics object describes physics and control semantics; the nonlinear solver should not invent them implicitly.
+
+### 12.3 Network preprocessing is part of the numerical method
+
+Many apparent convergence failures are model failures that occur before the first Newton step. A production implementation should therefore treat validation and preprocessing as part of the solver pipeline, not as optional input hygiene.
+
+At minimum, preprocessing should establish:
+
+1. **Per-unit consistency.** Convert equipment data through one controlled base-conversion path. MVA base, nominal voltage, transformer-side bases, shunt conventions, and load/generation signs must be unambiguous.
+2. **Connectivity and islands.** Determine energized components from actual status. Every independently rotating energized island needs an angular reference and a modeled balancing mechanism appropriate to the study.
+3. **Stable internal indexing.** External bus numbers, database keys, UUIDs, or CIM identifiers belong to the data layer. Numerical kernels should use compact internal indices with reversible mappings.
+4. **Terminal consistency.** Transformer orientation, tap side, phase-shift sign, charging allocation, and from/to definitions must agree with the branch stamp used in both the solve and post-processing.
+5. **Parameter sanity.** Detect non-finite values, contradictory limits, invalid tap positions, impossible voltage targets, duplicate equipment, disconnected controllers, and other obviously malformed inputs.
+6. **Zero- and near-zero-impedance treatment.** Do not hide extreme admittances behind arbitrary epsilon impedances. Depending on the physical device and application, bus merging, explicit constraints, topology reduction, or controlled regularization may be appropriate.
+7. **Reference and control ownership.** Identify missing or conflicting controls before constructing the reduced equation set.
