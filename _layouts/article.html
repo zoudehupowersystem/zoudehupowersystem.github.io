@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{{ page.lang | default: 'zh-CN' }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,6 +15,7 @@
   <link rel="canonical" href="https://zoudehupowersystem.github.io{{ page.url }}" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="邹德虎 · Dehu Zou" />
+  <meta property="og:locale" content="{% if page.lang == 'en' %}en_US{% else %}zh_CN{% endif %}" />
   <meta property="og:title" content="{{ seo_title | escape }}" />
   <meta property="og:description" content="{{ seo_description | escape }}" />
   <meta property="og:url" content="https://zoudehupowersystem.github.io{{ page.url }}" />
@@ -48,7 +49,7 @@
       "@id": "https://zoudehupowersystem.github.io/#dehu-zou",
       "name": "邹德虎 / Dehu Zou"
     },
-    "inLanguage": "zh-CN"
+    "inLanguage": {{ page.lang | default: 'zh-CN' | jsonify }}
   }
   </script>
   <style>
@@ -278,12 +279,19 @@
 </head>
 <body>
   <div class="page">
-    <header class="blog-header" aria-label="博客主题栏目">
-      <div class="kicker">主题栏目 · FEATURED COLUMN</div>
-      <div class="brand">邹德虎的博客 · Dehu Zou's Blog</div>
-      <div class="topics">电力系统 · 工程技术 · 计算与仿真</div>
-      <a class="home" href="{{ '/' | relative_url }}">← 返回个人主页 · Home</a>
-    </header>
+    <header class="blog-header" aria-label="{% if page.lang == 'en' %}Power systems blog{% else %}博客主题栏目{% endif %}">
+    {% if page.lang == 'en' %}
+    <div class="kicker">POWER SYSTEMS · FEATURED COLUMN</div>
+    <div class="brand">Dehu Zou's Blog</div>
+    <div class="topics">Power Systems · Engineering · Computing &amp; Simulation</div>
+    <a class="home" href="{{ '/' | relative_url }}">← Personal Website</a>
+    {% else %}
+    <div class="kicker">主题栏目 · FEATURED COLUMN</div>
+    <div class="brand">邹德虎的博客 · Dehu Zou's Blog</div>
+    <div class="topics">电力系统 · 工程技术 · 计算与仿真</div>
+    <a class="home" href="{{ '/' | relative_url }}">← 返回个人主页 · Home</a>
+    {% endif %}
+  </header>
     <main class="article">
       {{ content }}
     </main>
