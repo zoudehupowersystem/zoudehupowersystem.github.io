@@ -1,0 +1,237 @@
+name: Refine industrial power flow section
+
+on:
+  push:
+    paths:
+      - '.github/workflows/refine-industrial-powerflow.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refine article
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('ac-power-flow-ybus-newton.md')
+          s = p.read_text(encoding='utf-8')
+
+          provenance = '\n---\n\n## Note on provenance\n'
+          if provenance in s:
+              s = s.split(provenance, 1)[0].rstrip() + '\n'
+
+          anchor = '\n---\n\n## 13. The broader lesson: matrix thinking is not shorthand\n'
+          if anchor not in s:
+              raise SystemExit('Expected section 13 anchor not found')
+
+          industrial = r'''
+---
+
+## 13. What an industrial-grade power-flow program must provide
+
+A classroom Newton solver can be mathematically correct in a few hundred lines. An industrial power-flow program is a different engineering object. Its core task is not merely to solve
+
+$$
+F(x)=0,
+$$
+
+but to solve the *right* equations, for imperfect and changing network data, under control limits and discrete modes, with predictable performance, reproducible diagnostics, and defensible results.
+
+The exact feature set depends on the application—planning, EMS, security analysis, market studies, distribution analysis, or simulation initialization—but several capabilities are broadly non-negotiable.
+
+### 13.1 Model coverage must follow control semantics, not only device names
+
+A production solver needs more than lines, transformers, constant-power loads, and ideal PV generators. It must represent the steady-state behavior that materially changes the solved operating point.
+
+Typical examples include:
+
+- off-nominal and phase-shifting transformers;
+- line charging and bus shunts;
+- generator reactive capability and voltage-control limits;
+- multiple regulating devices connected to the same bus;
+- remote voltage control and reactive-power participation;
+- distributed active-power balancing rather than a single artificial slack source;
+- switched shunts and tap-changing transformers;
+- voltage-dependent load models where required;
+- HVDC, FACTS, inverter-based resources, or other controlled injections when they are relevant to the study scope.
+
+The important design principle is that a device model should expose **equations, controlled variables, free variables, limits, and mode transitions**. A label such as "PV bus" is only the reduced consequence of those equations.
+
+This distinction becomes critical when several controllers interact. Two devices cannot independently impose two inconsistent values on the same controlled quantity. The software therefore needs explicit ownership or coordination of control objectives rather than a collection of loosely coupled bus flags.
+
+### 13.2 Network preprocessing is part of the numerical method
+
+Many apparent "solver failures" originate before Newton iteration begins. A production implementation should validate and preprocess the case before constructing the nonlinear equations.
+
+Important checks include:
+
+- connectivity and island detection;
+- one valid angle reference per solved synchronous island;
+- consistent terminal orientation and transformer conventions;
+- per-unit and base-voltage consistency;
+- duplicate or contradictory equipment records;
+- zero or near-zero impedance branches;
+- disconnected regulating devices;
+- obviously invalid voltage setpoints, tap ratios, limits, or injections.
+
+Near-zero impedance branches deserve particular attention. Leaving them untreated can create extreme admittances and poor conditioning; blindly replacing them by arbitrary finite impedances changes the physical model. Depending on the application, bus merging, constraint formulations, or carefully defined regularization may be preferable.
+
+Topology processing should also produce stable internal indices and sparse patterns. External equipment identifiers should not be used directly as numerical matrix indices.
+
+### 13.3 Robustness requires a solver hierarchy, not a single Newton loop
+
+Full Newton is an excellent default, but production robustness usually requires more than one path to convergence.
+
+A practical hierarchy may include:
+
+1. reuse of a previously solved state or state-estimator result when available;
+2. a conventional Newton solve with full steps;
+3. damping or line search when the residual does not decrease adequately;
+4. controlled active-set updates for reactive and other limits;
+5. continuation, homotopy, or a formulation change for difficult cases;
+6. a clean failure classification when the case remains unsolved.
+
+Discrete control changes should be coordinated with the nonlinear solve. A common engineering pattern is an outer control loop around an inner continuous Newton solve. This prevents uncontrolled PV/PQ, tap, or shunt switching at every incomplete Newton iterate.
+
+Termination also needs more than an iteration counter. At minimum, the program should record residual norms, correction norms, active control modes, limit changes, and the reason for termination.
+
+### 13.4 Sparse linear algebra is a first-class subsystem
+
+For large systems, sparse factorization is often the dominant computational kernel. Treating it as an incidental library call leaves substantial performance and reliability on the table.
+
+An industrial implementation should manage at least:
+
+- sparse storage formats and deterministic matrix assembly;
+- fill-reducing ordering such as AMD/COLAMD or solver-specific alternatives;
+- separation of symbolic analysis from numerical factorization where possible;
+- numerical pivoting and singularity reporting;
+- reuse of sparsity structure when topology and active sets are unchanged;
+- efficient row/column extraction without forming dense intermediates;
+- memory allocation and workspace reuse across repeated solves.
+
+For contingency analysis, time-series studies, or market/scenario calculations, the larger optimization problem is often not "make one Newton iteration faster" but **reuse structure across thousands of closely related solves**. Warm starts, shared symbolic analysis, cached topology products, and parallel scenario execution can matter more than micro-optimizing scalar arithmetic.
+
+GPU acceleration is not automatically beneficial. Sparse factorization has irregular memory access and synchronization costs, and power-flow cases may be too small to amortize data movement. Hardware acceleration should therefore be justified by measured workload characteristics, not by matrix notation alone.
+
+### 13.5 Diagnostics are part of the product, not a debugging afterthought
+
+A production solver must explain failure well enough that an engineer can act on it.
+
+Useful diagnostics include:
+
+- buses with the largest active- and reactive-power mismatches;
+- devices currently enforcing or violating control limits;
+- islands and their reference status;
+- generators at $P/Q$ limits;
+- tap or shunt controllers at bounds;
+- abnormal voltage magnitudes or branch loadings;
+- large Newton corrections;
+- singular or nearly singular factorization warnings;
+- a history of residual reduction and mode changes.
+
+Condition-number estimates or factorization diagnostics can be useful, but they should be interpreted carefully. A poorly conditioned Jacobian may reflect bad scaling, bad data, an awkward formulation, or genuine proximity to a voltage-solvability boundary. The diagnostic system should present evidence rather than overclaim a physical cause.
+
+The goal is to replace a single message—"power flow did not converge"—with a structured failure report.
+
+### 13.6 A converged state is only the beginning of the engineering result
+
+After solving the state, the program should compute and validate derived quantities consistently from the same network model:
+
+- branch terminal $P/Q$ flows and losses;
+- generator outputs implied by control equations;
+- voltage and thermal-limit violations;
+- reactive reserves and binding controls;
+- transformer and shunt states;
+- island power balances;
+- selected sensitivities when needed by downstream applications.
+
+The post-processing layer must use the same sign conventions and terminal models as the nonlinear equations. Recomputing branch flows with a different transformer convention is a surprisingly easy way to create internally inconsistent results.
+
+For online or automated applications, output should also carry status metadata: convergence state, active-set state, warnings, iteration counts, residuals, and model/version identifiers.
+
+### 13.7 Verification must be continuous, not a one-time acceptance test
+
+The derivative tests and cross-solver comparisons described earlier are necessary, but industrial development requires a permanent regression system.
+
+A defensible test corpus should contain:
+
+- small analytically understandable networks;
+- standard IEEE/PEGASE or other public benchmark cases where licensing permits;
+- internally curated cases containing phase shifters, taps, multiple controllers, limits, islands, and pathological data;
+- historical production cases that once exposed real defects;
+- stressed and intentionally infeasible cases.
+
+Each release should be checked for numerical regressions in voltages, angles, flows, losses, active control modes, and failure classification. Tolerances should account for legitimate differences among sparse linear solvers and pivoting strategies while still detecting material changes.
+
+Differential testing against an independent implementation is particularly powerful. Agreement should not be limited to the final voltage vector; branch flows, device outputs, limit modes, and failure behavior should also be compared.
+
+### 13.8 Software architecture determines whether the solver can evolve
+
+The numerical core should not be entangled with database schemas, GUI objects, or one vendor's sparse solver API.
+
+A maintainable architecture typically separates:
+
+- external data ingestion and validation;
+- internal network/device model;
+- topology and sparse-structure assembly;
+- residual/Jacobian evaluation;
+- nonlinear solution strategy;
+- sparse linear-algebra backend;
+- control/limit state machines;
+- post-processing and diagnostics;
+- application-facing API.
+
+This separation makes it possible to replace a linear solver, add a device model, introduce automatic differentiation, or support a new application without rewriting the entire program.
+
+Determinism is also important. Given the same case, options, and numerical backend, repeated runs should normally produce the same mode sequence and practically identical results. Hidden dependence on hash-map iteration order, uninitialized memory, nondeterministic parallel reductions, or unstable device ordering is unacceptable in safety-relevant engineering software.
+
+### 13.9 R&D priorities: optimize the whole solution pipeline
+
+The development priorities of an industrial solver can be summarized as follows:
+
+| Layer | Core question | Engineering target |
+|---|---|---|
+| Model | Are the solved equations faithful to device controls and limits? | Explicit control semantics, consistent sign/base conventions |
+| Data | Can bad or inconsistent cases be detected before iteration? | Validation, topology checks, stable indexing, preprocessing |
+| Nonlinear solve | Can difficult but feasible cases be solved predictably? | Warm starts, damping, active sets, fallback strategies |
+| Linear algebra | Can large and repeated cases be solved efficiently? | Sparse ordering, factorization, structure reuse, memory discipline |
+| Controls | Are discrete and continuous controls coordinated correctly? | State machines, hysteresis, bounded outer loops |
+| Diagnostics | Can an engineer understand failure or stress? | Structured residual, limit, island, and factorization reports |
+| Verification | Can results survive independent scrutiny? | Derivative tests, cross-solver checks, regression corpora |
+| Architecture | Can the codebase evolve without destabilizing the solver? | Modular interfaces, deterministic behavior, replaceable backends |
+
+The central R&D lesson is that the nonlinear equations are only one layer. **Industrial quality comes from making modeling, numerical analysis, sparse computation, control logic, diagnostics, verification, and software architecture agree with one another.**
+'''
+
+          s = s.replace(anchor, industrial + '\n---\n\n## 14. The broader lesson: matrix thinking is not shorthand\n', 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+          rm -f .github/workflows/refine-industrial-powerflow.yml
+
+      - name: Validate article
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q '## 13. What an industrial-grade power-flow program must provide' ac-power-flow-ybus-newton.md
+          grep -q '## 14. The broader lesson: matrix thinking is not shorthand' ac-power-flow-ybus-newton.md
+          ! grep -q '## Note on provenance' ac-power-flow-ybus-newton.md
+          grep -q 'Sparse linear algebra is a first-class subsystem' ac-power-flow-ybus-newton.md
+          grep -q 'R&D priorities: optimize the whole solution pipeline' ac-power-flow-ybus-newton.md
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Add industrial-grade power flow development guidance'
+          git push origin main
