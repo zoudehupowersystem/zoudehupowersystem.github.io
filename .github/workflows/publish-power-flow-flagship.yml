@@ -1,0 +1,42 @@
+name: Publish flagship power flow article
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-power-flow-flagship.yml
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Assemble and verify final files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .pf-publish/chunk-00 .pf-publish/chunk-01 .pf-publish/chunk-02 .pf-publish/chunk-03 .pf-publish/chunk-04 .pf-publish/chunk-05 .pf-publish/chunk-06 .pf-publish/chunk-07 > ac-power-flow-ybus-newton.md
+          mkdir -p assets/code
+          cat .pf-publish/py-00 .pf-publish/py-01 .pf-publish/py-02 .pf-publish/py-03 > assets/code/power_flow_reference.py
+          printf '%s  %s\n' '8cad70b817f367c3192210e512eb9971323ee00c0ff8fb3d151ccf13e2f32f22' 'ac-power-flow-ybus-newton.md' | sha256sum -c -
+          printf '%s  %s\n' '5fbffc113dd596c19ca00fb68aa89e8c15e9003898aad72d6e53cb738cd6f8b3' 'assets/code/power_flow_reference.py' | sha256sum -c -
+          printf '%s  %s\n' 'fad55e4474bd4e0a0f5234798d9a4bf0e2c3da72e1d5adc16fe8c51faaadf3d5' 'assets/code/case3_zou.m' | sha256sum -c -
+          printf '%s  %s\n' 'c1c8f0c56c9eb220e256775023b89311174b77466e8fd936ac37b305f4d26aa4' 'assets/code/check_case3_zou.m' | sha256sum -c -
+          printf '%s  %s\n' 'c82f75271112d423290c0b403244168cd8d25cb3185768eb184d102650d7f3b0' 'assets/code/power-flow-verification-results.json' | sha256sum -c -
+          printf '%s  %s\n' '2085f26e5899db9300de1e3560213ae55d761e826f90026323273edad32e9329' 'assets/code/requirements-tested.txt' | sha256sum -c -
+          rm -rf .pf-publish
+      - name: Commit publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A ac-power-flow-ybus-newton.md assets/code .pf-publish
+          git diff --cached --stat
+          git commit -m 'Publish revised industrial-grade power flow flagship article'
+          git push origin HEAD:main
