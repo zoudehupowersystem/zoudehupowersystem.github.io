@@ -1,0 +1,72 @@
+name: Sync article updated dates
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.md'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync front matter updated date from the content commit
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import os, re, subprocess
+
+          before = os.environ['BEFORE_SHA']
+          after = os.environ['AFTER_SHA']
+          zero = '0' * 40
+          if before == zero:
+              changed = subprocess.check_output(['git','ls-tree','-r','--name-only',after], text=True).splitlines()
+          else:
+              changed = subprocess.check_output(['git','diff','--name-only',before,after,'--','*.md','**/*.md'], text=True).splitlines()
+
+          commit_date = subprocess.check_output(['git','show','-s','--format=%cI',after], text=True).strip()[:10]
+          touched = []
+          for name in changed:
+              p = Path(name)
+              if not p.is_file() or p.suffix.lower() != '.md':
+                  continue
+              text = p.read_text(encoding='utf-8')
+              m = re.match(r'^---\n(.*?)\n---\n', text, flags=re.S)
+              if not m:
+                  continue
+              fm = m.group(1)
+              if not re.search(r'^layout:\s*(article|manitoba)\s*$', fm, flags=re.M):
+                  continue
+              if re.search(r'^updated:\s*.*$', fm, flags=re.M):
+                  new_fm = re.sub(r'^updated:\s*.*$', f'updated: "{commit_date}"', fm, count=1, flags=re.M)
+              else:
+                  new_fm = fm + f'\nupdated: "{commit_date}"'
+              new_text = '---\n' + new_fm + '\n---\n' + text[m.end():]
+              if new_text != text:
+                  p.write_text(new_text, encoding='utf-8')
+                  touched.append(name)
+          print('Updated:', touched)
+          PY
+
+      - name: Commit synchronized dates
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.md' '**/*.md'
+          git commit -m "Sync article updated dates [skip ci]"
+          git push
