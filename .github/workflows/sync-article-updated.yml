@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 jobs:
   sync:
@@ -60,7 +61,9 @@ jobs:
           print('Updated:', touched)
           PY
 
-      - name: Commit synchronized dates
+      - name: Commit synchronized dates and rebuild Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if git diff --quiet; then
             exit 0
@@ -70,3 +73,13 @@ jobs:
           git add -- '*.md' '**/*.md'
           git commit -m "Sync article updated dates [skip ci]"
           git push
+
+          # Pushes created with GITHUB_TOKEN do not normally start another workflow run.
+          # Explicitly request a Pages build so sitemap <lastmod> and visible bylines
+          # are rebuilt from the synchronized front matter immediately.
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --url "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds" \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28"
