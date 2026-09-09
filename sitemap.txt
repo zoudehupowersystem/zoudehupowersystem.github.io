@@ -1,11 +1,34 @@
----
-layout: null
-permalink: /sitemap.txt
----
-{{ site.url }}/
-{{ site.url }}/en.html
-{{ site.url }}/blog.html
-{{ site.url }}/english.html
-{% assign standard_articles = site.pages | where: 'layout', 'article' | sort: 'url' %}{% for p in standard_articles %}{{ site.url }}{{ p.url | uri_escape }}
-{% endfor %}{% assign manitoba_articles = site.pages | where: 'layout', 'manitoba' | sort: 'url' %}{% for p in manitoba_articles %}{{ site.url }}{{ p.url | uri_escape }}
-{% endfor %}
+https://zoudehupowersystem.github.io/
+https://zoudehupowersystem.github.io/en.html
+https://zoudehupowersystem.github.io/blog.html
+https://zoudehupowersystem.github.io/english.html
+https://zoudehupowersystem.github.io/C%2B%2B%E4%BC%98%E5%8C%96%E6%8A%80%E6%9C%AF.html
+https://zoudehupowersystem.github.io/ac-power-flow-ybus-newton.html
+https://zoudehupowersystem.github.io/%E4%BB%8E%E7%89%A9%E7%90%86%E5%AD%A6%E5%87%BA%E5%8F%91%E7%90%86%E8%A7%A3%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F.html
+https://zoudehupowersystem.github.io/%E4%BB%8E%E9%9F%B3%E4%B9%90%E5%88%B0%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%AC%A1%E8%B0%83%E9%A2%91.html
+https://zoudehupowersystem.github.io/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F.html
+https://zoudehupowersystem.github.io/%E5%B7%A5%E4%B8%9A%E7%B3%BB%E7%BB%9F%E6%BC%94%E5%8C%96%E4%B8%8E%E8%AE%BE%E8%AE%A1.html
+https://zoudehupowersystem.github.io/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E5%AF%B9%E7%A7%B0%E5%88%86%E9%87%8F%E6%B3%95.html
+https://zoudehupowersystem.github.io/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E6%BD%AE%E6%B5%81%E8%AE%A1%E7%AE%97.html
+https://zoudehupowersystem.github.io/%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80.html
+https://zoudehupowersystem.github.io/%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F%E4%BA%8C%E6%AC%A1%E8%AE%BE%E5%A4%87%E7%A7%91%E6%99%AE.html
+https://zoudehupowersystem.github.io/%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F%E4%BB%BF%E7%9C%9F%E4%BC%9A%E8%AE%AE%E5%8F%82%E4%BC%9A%E8%AE%B0%E5%BD%95.html
+https://zoudehupowersystem.github.io/%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6%E7%9A%84%E6%80%9D%E8%80%83.html
+https://zoudehupowersystem.github.io/%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F%E8%BF%91%E4%BC%BC%E5%B8%B8%E6%95%B0%E4%B8%8E%E8%BF%91%E4%BC%BC%E5%85%AC%E5%BC%8F.html
+https://zoudehupowersystem.github.io/%E7%94%B5%E5%8A%9B%E9%80%9A%E4%BF%A1%E7%A7%91%E6%99%AE.html
+https://zoudehupowersystem.github.io/%E7%94%B5%E7%BD%91%E8%B0%83%E5%BA%A6%E6%8A%80%E6%9C%AF%E6%80%9D%E8%80%83.html
+https://zoudehupowersystem.github.io/%E7%9F%A9%E9%98%B5%E6%80%9D%E7%BB%B4%E4%B8%8B%E7%9A%84%E6%BD%AE%E6%B5%81%E8%AE%A1%E7%AE%97.html
+https://zoudehupowersystem.github.io/%E7%9F%AD%E8%B7%AF%E4%B8%8E%E7%9F%AD%E8%B7%AF%E6%AF%94.html
+https://zoudehupowersystem.github.io/%E8%81%8C%E4%B8%9A%E7%94%9F%E6%B6%AF%E5%9B%9E%E9%A1%BE%E4%B8%8E%E6%80%9D%E8%80%83.html
+https://zoudehupowersystem.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B8%AD%E7%9A%84%E5%9F%BA%E7%A1%80%E6%95%B0%E5%AD%A6%E5%87%BD%E6%95%B0.html
+https://zoudehupowersystem.github.io/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E4%B9%8B%E6%97%85.html
+https://zoudehupowersystem.github.io/%E8%AE%BA%E7%94%B5%E5%8A%9B%E5%AE%89%E5%85%A8%E7%94%9F%E4%BA%A7.html
+https://zoudehupowersystem.github.io/%E8%AE%BA%E7%94%B5%E5%8A%9B%E6%95%B0%E5%AD%97%E5%8C%96%E8%BD%AC%E5%9E%8B.html
+https://zoudehupowersystem.github.io/%E8%AE%BA%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F%E4%BB%BF%E7%9C%9F.html
+https://zoudehupowersystem.github.io/%E8%AE%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B.html
+https://zoudehupowersystem.github.io/%E8%B0%88%E8%B0%88%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80.html
+https://zoudehupowersystem.github.io/%E8%B0%88%E8%B0%88%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%A3%85%E7%BD%AE.html
+https://zoudehupowersystem.github.io/%E8%B0%88%E8%B0%88%E7%94%B5%E5%8A%9B%E7%B3%BB%E7%BB%9F%E7%8A%B6%E6%80%81%E4%BC%B0%E8%AE%A1.html
+https://zoudehupowersystem.github.io/%E9%87%8D%E6%B8%A9%E7%89%9B%E9%A1%BF-%E6%8B%89%E5%A4%AB%E9%80%8A%E6%B3%95.html
+https://zoudehupowersystem.github.io/%E6%9B%BC%E5%B0%BC%E6%89%98%E5%B7%B4%E6%B0%B4%E7%94%B5%E5%B1%80%E7%9A%84%E5%88%9B%E4%B8%9A%E5%8F%B2.html
+https://zoudehupowersystem.github.io/manitoba-hydro-pscad-rtds-history.html
