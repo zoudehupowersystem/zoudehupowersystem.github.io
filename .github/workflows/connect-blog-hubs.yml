@@ -1,0 +1,48 @@
+name: One-time connect blog hubs
+
+on:
+  push:
+    paths:
+      - '.github/workflows/connect-blog-hubs.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  connect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Point profile article buttons to the new hubs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<a class="btn primary" href="#articles"><strong>文章</strong><span class="mono">Blog</span></a>'
+          new = '<a class="btn primary" href="blog.html"><strong>文章</strong><span class="mono">Blog</span></a>'
+          if old not in s:
+              raise SystemExit('Chinese homepage article button not found')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+
+          p = Path('en.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<a class="btn primary" href="#articles">Articles</a>'
+          new = '<a class="btn primary" href="english.html">English Articles</a>'
+          if old not in s:
+              raise SystemExit('English homepage article button not found')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Commit changes and remove this one-time workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/connect-blog-hubs.yml
+          git add index.html en.html
+          git commit -m "Connect profile pages to blog hubs"
+          git push
