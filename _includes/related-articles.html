@@ -1,0 +1,14 @@
+{% assign related_items = site.data.related[page.path] %}
+{% if related_items and related_items.size > 0 %}
+<aside class="related-articles" aria-label="{% if page.lang == 'en' %}Related articles{% else %}相关文章{% endif %}">
+  <div class="related-articles-title">{% if page.lang == 'en' %}Related articles{% else %}相关文章 · Related articles{% endif %}</div>
+  <ul>
+    {% for item in related_items limit: 3 %}
+    <li>
+      <a href="{{ item.url | relative_url }}"{% if item.lang %} hreflang="{{ item.lang }}"{% endif %}>{{ item.title }}</a>
+      {% if item.note %}<span>{{ item.note }}</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</aside>
+{% endif %}
