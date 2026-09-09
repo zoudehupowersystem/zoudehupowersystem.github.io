@@ -6,19 +6,15 @@ permalink: /sitemap.xml
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>{{ site.url }}/</loc>
-    <lastmod>2026-09-09</lastmod>
   </url>
   <url>
     <loc>{{ site.url }}/en.html</loc>
-    <lastmod>2026-09-09</lastmod>
   </url>
   <url>
     <loc>{{ site.url }}/blog.html</loc>
-    <lastmod>2026-09-09</lastmod>
   </url>
   <url>
     <loc>{{ site.url }}/english.html</loc>
-    <lastmod>2026-09-09</lastmod>
   </url>
 {% assign standard_articles = site.pages | where: 'layout', 'article' | sort: 'url' %}
 {% for p in standard_articles %}
