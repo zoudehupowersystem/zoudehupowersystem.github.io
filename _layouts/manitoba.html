@@ -6,9 +6,10 @@
   {% assign seo_title = page.seo_title | default: page.title %}
   {% capture fallback_description %}{{ content | strip_html | strip_newlines | replace: '  ', ' ' | truncate: 180 }}{% endcapture %}
   {% assign seo_description = page.description | default: fallback_description | strip %}
+  {% if page.lang == 'en' %}{% assign author_home = '/en.html' %}{% else %}{% assign author_home = '/' %}{% endif %}
   <title>{{ seo_title | escape }}</title>
   <meta name="description" content="{{ seo_description | escape }}" />
-  <meta name="author" content="Dehu Zou / 邹德虎" />
+  <meta name="author" content="邹德虎 / Dehu Zou" />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
   <link rel="me" href="https://orcid.org/0000-0002-3359-0145" />
   <link rel="canonical" href="https://zoudehupowersystem.github.io{{ page.url }}" />
@@ -17,6 +18,7 @@
   <link rel="alternate" hreflang="x-default" href="https://zoudehupowersystem.github.io/manitoba-hydro-pscad-rtds-history.html" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="邹德虎 · Dehu Zou" />
+  <meta property="og:locale" content="{% if page.lang == 'en' %}en_US{% else %}zh_CN{% endif %}" />
   <meta property="og:title" content="{{ seo_title | escape }}" />
   <meta property="og:description" content="{{ seo_description | escape }}" />
   <meta property="og:url" content="https://zoudehupowersystem.github.io{{ page.url }}" />
@@ -33,28 +35,33 @@
     "description": {{ seo_description | jsonify }},
     {% if page.updated %}"dateModified": {{ page.updated | jsonify }},{% endif %}
     "url": {{ 'https://zoudehupowersystem.github.io' | append: page.url | jsonify }},
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": {{ 'https://zoudehupowersystem.github.io' | append: page.url | jsonify }}
-    },
+    "mainEntityOfPage": {"@type": "WebPage", "@id": {{ 'https://zoudehupowersystem.github.io' | append: page.url | jsonify }}},
     "author": {
       "@type": "Person",
       "@id": "https://zoudehupowersystem.github.io/#dehu-zou",
       "name": "邹德虎",
       "alternateName": "Dehu Zou",
-      "url": "https://zoudehupowersystem.github.io/",
+      "url": {{ 'https://zoudehupowersystem.github.io' | append: author_home | jsonify }},
       "sameAs": ["https://orcid.org/0000-0002-3359-0145", "https://github.com/zoudehupowersystem"]
     },
-    "publisher": {
-      "@type": "Person",
-      "@id": "https://zoudehupowersystem.github.io/#dehu-zou",
-      "name": "邹德虎 / Dehu Zou"
-    },
+    "publisher": {"@type": "Person", "@id": "https://zoudehupowersystem.github.io/#dehu-zou", "name": "邹德虎 / Dehu Zou"},
     "inLanguage": {{ page.lang | default: 'zh-CN' | jsonify }}
   }
   </script>
+  <style>
+    .manitoba-layout-nav,.article-byline,.related-articles{max-width:930px;margin-left:auto;margin-right:auto;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","PingFang SC","Microsoft YaHei",sans-serif}.manitoba-layout-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;margin-bottom:10px;padding:0 24px}.manitoba-layout-nav a{display:inline-flex;padding:7px 9px;border:1px solid #cddcff;border-radius:9px;background:#f8fbff;color:#24529a;text-decoration:none;font-size:12px;font-weight:650}.article-byline{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:0;margin-bottom:16px;padding:10px 13px;border:1px solid #e1e7ef;border-radius:10px;background:#fafbfc;color:#667085;font-size:13px;line-height:1.55}.article-byline a{color:#24529a;font-weight:650;text-decoration:none}.article-byline-label{color:#475467}.article-byline-sep{color:#b0b8c4}.related-articles{margin-top:44px;margin-bottom:30px;padding:18px 20px;border:1px solid #dbe5f5;border-radius:13px;background:#f8fbff;color:#20242a}.related-articles-title{font-size:15px;font-weight:750;color:#17345f;margin-bottom:9px}.related-articles ul{margin:0;padding-left:1.2em}.related-articles li{margin:8px 0;line-height:1.55}.related-articles a{color:#155eef;text-decoration:none}.related-articles li span{margin-left:7px;color:#98a2b3;font-size:11px;font-weight:700}@media(max-width:700px){.manitoba-layout-nav{padding:0 16px}.article-byline,.related-articles{margin-left:16px;margin-right:16px}}
+  </style>
 </head>
 <body>
-{{ content }}
+  <nav class="manitoba-layout-nav" aria-label="Site navigation">
+    {% if page.lang == 'en' %}
+      <a href="{{ '/en.html' | relative_url }}">Personal Website</a><a href="{{ '/english.html' | relative_url }}">English Articles</a><a href="{{ '/blog.html' | relative_url }}">All Articles</a>
+    {% else %}
+      <a href="{{ '/' | relative_url }}">个人主页</a><a href="{{ '/blog.html' | relative_url }}">博客目录</a><a href="{{ '/english.html' | relative_url }}">English</a>
+    {% endif %}
+  </nav>
+  {% include article-byline.html %}
+  {{ content }}
+  {% include related-articles.html %}
 </body>
 </html>
