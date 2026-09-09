@@ -1,0 +1,58 @@
+name: One-time fix structured data DateTime
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/fix-structured-datetime.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fix ProfilePage and BlogPosting dateModified values
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          profile_datetime = '2026-09-09T19:37:00+08:00'
+          for name in ['index.html', 'en.html']:
+              p = Path(name)
+              text = p.read_text(encoding='utf-8')
+              old = '"dateModified": "2026-09-09"'
+              new = f'"dateModified": "{profile_datetime}"'
+              if old not in text:
+                  raise SystemExit(f'Expected ProfilePage dateModified not found in {name}')
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          old_liquid = '''{% if page.updated %}"dateModified": {{ page.updated | jsonify }},{% endif %}'''
+          new_liquid = '''{% if page.updated %}"dateModified": "{{ page.updated | date: '%Y-%m-%d' }}T00:00:00+08:00",{% endif %}'''
+          for name in ['_layouts/article.html', '_layouts/manitoba.html']:
+              p = Path(name)
+              text = p.read_text(encoding='utf-8')
+              if old_liquid not in text:
+                  raise SystemExit(f'Expected BlogPosting dateModified template not found in {name}')
+              p.write_text(text.replace(old_liquid, new_liquid, 1), encoding='utf-8')
+          PY
+
+      - name: Verify fixes
+        run: |
+          grep -F '"dateModified": "2026-09-09T19:37:00+08:00"' index.html
+          grep -F '"dateModified": "2026-09-09T19:37:00+08:00"' en.html
+          grep -F 'T00:00:00+08:00' _layouts/article.html
+          grep -F 'T00:00:00+08:00' _layouts/manitoba.html
+
+      - name: Commit fixes and remove one-time workflow
+        run: |
+          rm .github/workflows/fix-structured-datetime.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Fix structured data DateTime values"
+          git push
