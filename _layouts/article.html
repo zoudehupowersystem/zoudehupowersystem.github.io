@@ -31,7 +31,7 @@
     "@type": "BlogPosting",
     "headline": {{ page.title | jsonify }},
     "description": {{ seo_description | jsonify }},
-    {% if page.updated %}"dateModified": {{ page.updated | jsonify }},{% endif %}
+    {% if page.updated %}"dateModified": "{{ page.updated | date: '%Y-%m-%d' }}T00:00:00+08:00",{% endif %}
     "url": {{ 'https://zoudehupowersystem.github.io' | append: page.url | jsonify }},
     "mainEntityOfPage": {
       "@type": "WebPage",
