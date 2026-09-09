@@ -7,6 +7,7 @@
   {% assign seo_title = page.seo_title | default: default_seo_title | strip %}
   {% capture fallback_description %}{{ content | strip_html | strip_newlines | replace: '  ', ' ' | truncate: 180 }}{% endcapture %}
   {% assign seo_description = page.description | default: fallback_description | strip %}
+  {% if page.lang == 'en' %}{% assign author_home = '/en.html' %}{% else %}{% assign author_home = '/' %}{% endif %}
   <title>{{ seo_title | escape }}</title>
   <meta name="description" content="{{ seo_description | escape }}" />
   <meta name="author" content="邹德虎 / Dehu Zou" />
@@ -41,7 +42,7 @@
       "@id": "https://zoudehupowersystem.github.io/#dehu-zou",
       "name": "邹德虎",
       "alternateName": "Dehu Zou",
-      "url": "https://zoudehupowersystem.github.io/",
+      "url": {{ 'https://zoudehupowersystem.github.io' | append: author_home | jsonify }},
       "sameAs": ["https://orcid.org/0000-0002-3359-0145", "https://github.com/zoudehupowersystem"]
     },
     "publisher": {
@@ -53,252 +54,33 @@
   }
   </script>
   <style>
-    :root {
-      --ink: #20242a;
-      --muted: #667085;
-      --line: #e3e7ee;
-      --soft: #f6f8fb;
-      --blue: #155eef;
-      --blue-soft: #eef4ff;
-      --quote: #344054;
-      --maxw: 930px;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      background: #fff;
-      color: var(--ink);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-        "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-    .page {
-      max-width: var(--maxw);
-      margin: 0 auto;
-      padding: 24px 24px 72px;
-    }
-    .blog-header {
-      position: relative;
-      margin: 0 0 34px;
-      padding: 15px 160px 15px 17px;
-      border: 1px solid #cddcff;
-      border-radius: 13px;
-      background: linear-gradient(180deg, #f9fbff 0%, #f3f7ff 100%);
-    }
-    .blog-header .kicker {
-      font-size: 11px;
-      line-height: 1.4;
-      letter-spacing: .13em;
-      text-transform: uppercase;
-      color: #47658f;
-      font-weight: 700;
-    }
-    .blog-header .brand {
-      margin-top: 3px;
-      font-size: 16px;
-      line-height: 1.45;
-      font-weight: 750;
-      color: #17345f;
-    }
-    .blog-header .topics {
-      margin-top: 2px;
-      font-size: 12px;
-      line-height: 1.55;
-      color: var(--muted);
-    }
-    .blog-header .home {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: inline-flex;
-      align-items: center;
-      padding: 8px 11px;
-      border: 1px solid #b9cdf6;
-      border-radius: 9px;
-      background: #fff;
-      color: #24529a;
-      font-size: 13px;
-      font-weight: 650;
-      white-space: nowrap;
-      text-decoration: none;
-    }
-    .blog-header .home:hover { background: var(--blue-soft); }
-    .article {
-      font-size: 16.5px;
-      line-height: 1.86;
-      overflow-wrap: anywhere;
-    }
-    .article > :first-child { margin-top: 0; }
-    .article h1 {
-      margin: 12px 0 20px;
-      font-size: clamp(2rem, 4vw, 2.55rem);
-      line-height: 1.25;
-      letter-spacing: -.02em;
-      color: #161b22;
-    }
-    .article h2 {
-      margin: 54px 0 18px;
-      padding-top: 12px;
-      border-top: 1px solid var(--line);
-      font-size: 1.66rem;
-      line-height: 1.36;
-      color: #1d2939;
-    }
-    .article h3 {
-      margin: 34px 0 13px;
-      font-size: 1.28rem;
-      line-height: 1.42;
-      color: #243b60;
-    }
-    .article h4 {
-      margin: 28px 0 10px;
-      font-size: 1.08rem;
-      line-height: 1.5;
-      color: #344054;
-    }
-    .article p { margin: 12px 0; }
-    .article a {
-      color: var(--blue);
-      text-decoration: none;
-      word-break: break-word;
-    }
-    .article a:hover {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .article strong { color: #172b4d; }
-    .article blockquote {
-      margin: 22px 0;
-      padding: 13px 18px;
-      border-left: 4px solid #7aa7ff;
-      background: #f3f6fb;
-      color: var(--quote);
-    }
-    .article blockquote > :first-child { margin-top: 0; }
-    .article blockquote > :last-child { margin-bottom: 0; }
-    .article ul, .article ol {
-      margin: 12px 0;
-      padding-left: 1.55em;
-    }
-    .article li { margin: 5px 0; }
-    .article img {
-      display: block;
-      max-width: 100%;
-      height: auto;
-      margin: 24px auto;
-      border-radius: 6px;
-    }
-    .article table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 22px 0;
-      font-size: .94em;
-      display: block;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .article thead { background: var(--soft); }
-    .article th, .article td {
-      border: 1px solid var(--line);
-      padding: 9px 11px;
-      vertical-align: top;
-      min-width: 80px;
-    }
-    .article th { text-align: left; font-weight: 700; }
-    .article pre {
-      overflow-x: auto;
-      margin: 20px 0;
-      padding: 14px 16px;
-      border: 1px solid #dce2ea;
-      border-radius: 10px;
-      background: #f7f8fa;
-      line-height: 1.55;
-      font-size: 13.5px;
-      tab-size: 4;
-    }
-    .article code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: .92em;
-      background: #f2f4f7;
-      padding: .12em .32em;
-      border-radius: 4px;
-    }
-    .article pre code { background: transparent; padding: 0; border-radius: 0; }
-    .article hr {
-      border: 0;
-      border-top: 1px solid var(--line);
-      margin: 40px 0;
-    }
-    .footer {
-      margin-top: 56px;
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: #98a2b3;
-      font-size: 12px;
-    }
-    mjx-container[jax="CHTML"][display="true"] {
-      overflow-x: auto;
-      overflow-y: hidden;
-      padding: 3px 0;
-    }
-    @media (max-width: 700px) {
-      .page { padding: 16px 16px 50px; }
-      .blog-header { padding: 14px 15px; }
-      .blog-header .home {
-        position: static;
-        transform: none;
-        margin-top: 10px;
-      }
-      .article { font-size: 16px; line-height: 1.82; }
-      .article h2 { margin-top: 44px; }
-    }
-    @media print {
-      .blog-header, .footer { display: none; }
-      .page { max-width: none; padding: 0; }
-      .article a { color: inherit; }
-    }
+    :root{--ink:#20242a;--muted:#667085;--line:#e3e7ee;--soft:#f6f8fb;--blue:#155eef;--blue-soft:#eef4ff;--quote:#344054;--maxw:930px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}.page{max-width:var(--maxw);margin:0 auto;padding:24px 24px 72px}.blog-header{position:relative;margin:0 0 20px;padding:15px 270px 15px 17px;border:1px solid #cddcff;border-radius:13px;background:linear-gradient(180deg,#f9fbff 0%,#f3f7ff 100%)}.blog-header .kicker{font-size:11px;line-height:1.4;letter-spacing:.13em;text-transform:uppercase;color:#47658f;font-weight:700}.blog-header .brand{margin-top:3px;font-size:16px;line-height:1.45;font-weight:750;color:#17345f}.blog-header .topics{margin-top:2px;font-size:12px;line-height:1.55;color:var(--muted)}.blog-nav{position:absolute;right:15px;top:50%;transform:translateY(-50%);display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.blog-nav a{display:inline-flex;align-items:center;padding:7px 9px;border:1px solid #b9cdf6;border-radius:9px;background:#fff;color:#24529a;font-size:12px;font-weight:650;white-space:nowrap;text-decoration:none}.blog-nav a:hover{background:var(--blue-soft)}.article-byline{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:0 0 26px;padding:10px 13px;border:1px solid #e1e7ef;border-radius:10px;background:#fafbfc;color:#667085;font-size:13px;line-height:1.55}.article-byline a{color:#24529a;font-weight:650;text-decoration:none}.article-byline a:hover{text-decoration:underline}.article-byline-label{color:#475467}.article-byline-sep{color:#b0b8c4}.article{font-size:16.5px;line-height:1.86;overflow-wrap:anywhere}.article>:first-child{margin-top:0}.article h1{margin:12px 0 20px;font-size:clamp(2rem,4vw,2.55rem);line-height:1.25;letter-spacing:-.02em;color:#161b22}.article h2{margin:54px 0 18px;padding-top:12px;border-top:1px solid var(--line);font-size:1.66rem;line-height:1.36;color:#1d2939}.article h3{margin:34px 0 13px;font-size:1.28rem;line-height:1.42;color:#243b60}.article h4{margin:28px 0 10px;font-size:1.08rem;line-height:1.5;color:#344054}.article p{margin:12px 0}.article a{color:var(--blue);text-decoration:none;word-break:break-word}.article a:hover{text-decoration:underline;text-underline-offset:3px}.article strong{color:#172b4d}.article blockquote{margin:22px 0;padding:13px 18px;border-left:4px solid #7aa7ff;background:#f3f6fb;color:var(--quote)}.article blockquote>:first-child{margin-top:0}.article blockquote>:last-child{margin-bottom:0}.article ul,.article ol{margin:12px 0;padding-left:1.55em}.article li{margin:5px 0}.article img{display:block;max-width:100%;height:auto;margin:24px auto;border-radius:6px}.article table{width:100%;border-collapse:collapse;margin:22px 0;font-size:.94em;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.article thead{background:var(--soft)}.article th,.article td{border:1px solid var(--line);padding:9px 11px;vertical-align:top;min-width:80px}.article th{text-align:left;font-weight:700}.article pre{overflow-x:auto;margin:20px 0;padding:14px 16px;border:1px solid #dce2ea;border-radius:10px;background:#f7f8fa;line-height:1.55;font-size:13.5px;tab-size:4}.article code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.92em;background:#f2f4f7;padding:.12em .32em;border-radius:4px}.article pre code{background:transparent;padding:0;border-radius:0}.article hr{border:0;border-top:1px solid var(--line);margin:40px 0}.related-articles{margin:52px 0 0;padding:18px 20px;border:1px solid #dbe5f5;border-radius:13px;background:#f8fbff}.related-articles-title{font-size:15px;font-weight:750;color:#17345f;margin-bottom:9px}.related-articles ul{margin:0;padding-left:1.2em}.related-articles li{margin:8px 0;color:#667085;line-height:1.55}.related-articles a{color:#155eef;text-decoration:none}.related-articles a:hover{text-decoration:underline;text-underline-offset:3px}.related-articles li span{margin-left:7px;color:#98a2b3;font-size:11px;font-weight:700}.footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#98a2b3;font-size:12px}.footer a{color:#667085;text-decoration:none}.footer a:hover{text-decoration:underline}mjx-container[jax="CHTML"][display="true"]{overflow-x:auto;overflow-y:hidden;padding:3px 0}@media(max-width:760px){.page{padding:16px 16px 50px}.blog-header{padding:14px 15px}.blog-nav{position:static;transform:none;margin-top:10px;justify-content:flex-start}.article{font-size:16px;line-height:1.82}.article h2{margin-top:44px}}@media print{.blog-header,.article-byline,.related-articles,.footer{display:none}.page{max-width:none;padding:0}.article a{color:inherit}}
   </style>
   <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']],
-        processEscapes: true
-      },
-      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
-    };
+    window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
   <div class="page">
     <header class="blog-header" aria-label="{% if page.lang == 'en' %}Power systems blog{% else %}博客主题栏目{% endif %}">
-    {% if page.lang == 'en' %}
-    <div class="kicker">POWER SYSTEMS · FEATURED COLUMN</div>
-    <div class="brand">Dehu Zou's Blog</div>
-    <div class="topics">Power Systems · Engineering · Computing &amp; Simulation</div>
-    <a class="home" href="{{ '/' | relative_url }}">← Personal Website</a>
-    {% else %}
-    <div class="kicker">主题栏目 · FEATURED COLUMN</div>
-    <div class="brand">邹德虎的博客 · Dehu Zou's Blog</div>
-    <div class="topics">电力系统 · 工程技术 · 计算与仿真</div>
-    <a class="home" href="{{ '/' | relative_url }}">← 返回个人主页 · Home</a>
-    {% endif %}
-  </header>
-    <main class="article">
-      {{ content }}
-    </main>
-    <footer class="footer">
-      <span>© 邹德虎 · Dehu Zou</span>
-      <span>Power Systems · Engineering · Computing &amp; Simulation</span>
-    </footer>
+      {% if page.lang == 'en' %}
+      <div class="kicker">POWER SYSTEMS · FEATURED COLUMN</div>
+      <div class="brand">Dehu Zou's Blog</div>
+      <div class="topics">Power Systems · Engineering · Computing &amp; Simulation</div>
+      <nav class="blog-nav"><a href="{{ '/en.html' | relative_url }}">Personal Website</a><a href="{{ '/english.html' | relative_url }}">English Articles</a><a href="{{ '/blog.html' | relative_url }}">All Articles</a></nav>
+      {% else %}
+      <div class="kicker">主题栏目 · FEATURED COLUMN</div>
+      <div class="brand">邹德虎的博客 · Dehu Zou's Blog</div>
+      <div class="topics">电力系统 · 工程技术 · 计算与仿真</div>
+      <nav class="blog-nav"><a href="{{ '/' | relative_url }}">个人主页</a><a href="{{ '/blog.html' | relative_url }}">博客目录</a><a href="{{ '/english.html' | relative_url }}">English</a></nav>
+      {% endif %}
+    </header>
+    {% include article-byline.html %}
+    <main class="article">{{ content }}</main>
+    {% include related-articles.html %}
+    <footer class="footer"><span>© 邹德虎 · Dehu Zou</span><span><a href="{{ '/blog.html' | relative_url }}">Blog Directory</a> · Power Systems · Engineering · Computing &amp; Simulation</span></footer>
   </div>
 </body>
 </html>
