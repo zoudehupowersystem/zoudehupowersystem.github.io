@@ -1,0 +1,88 @@
+name: One-time bilingual homepage setup
+
+on:
+  push:
+    paths:
+      - '.github/workflows/bilingual-homepage.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-homepage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch Chinese homepage and sitemaps
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          # Chinese homepage: SEO language alternates + visible English switch.
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          canonical = '  <link rel="canonical" href="https://zoudehupowersystem.github.io/" />'
+          alternates = canonical + '\n  <link rel="alternate" hreflang="zh-CN" href="https://zoudehupowersystem.github.io/" />\n  <link rel="alternate" hreflang="en" href="https://zoudehupowersystem.github.io/en.html" />\n  <link rel="alternate" hreflang="x-default" href="https://zoudehupowersystem.github.io/" />'
+          if 'href="https://zoudehupowersystem.github.io/en.html"' not in s:
+              if canonical not in s:
+                  raise SystemExit('Chinese homepage canonical marker not found')
+              s = s.replace(canonical, alternates, 1)
+
+          old_top = '      <div class="badge">更新时间：<span class="mono">2026-09</span></div>'
+          new_top = '      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">\n        <a class="badge" href="en.html" hreflang="en" lang="en">English</a>\n        <div class="badge">更新时间：<span class="mono">2026-09</span></div>\n      </div>'
+          if 'href="en.html" hreflang="en"' not in s:
+              if old_top not in s:
+                  raise SystemExit('Chinese homepage topbar marker not found')
+              s = s.replace(old_top, new_top, 1)
+
+          s = s.replace('"dateModified": "2026-09-08"', '"dateModified": "2026-09-09"', 1)
+          p.write_text(s, encoding='utf-8')
+
+          # XML sitemap.
+          p = Path('sitemap.xml')
+          s = p.read_text(encoding='utf-8')
+          en_url = 'https://zoudehupowersystem.github.io/en.html'
+          if en_url not in s:
+              root_entry = '  <url>\n    <loc>https://zoudehupowersystem.github.io/</loc>\n  </url>'
+              en_entry = root_entry + '\n  <url>\n    <loc>' + en_url + '</loc>\n  </url>'
+              if root_entry not in s:
+                  raise SystemExit('sitemap.xml root URL marker not found')
+              s = s.replace(root_entry, en_entry, 1)
+              p.write_text(s, encoding='utf-8')
+
+          # Text sitemap.
+          p = Path('sitemap.txt')
+          s = p.read_text(encoding='utf-8')
+          if en_url not in s:
+              root_line = 'https://zoudehupowersystem.github.io/\n'
+              if not s.startswith(root_line):
+                  raise SystemExit('sitemap.txt root URL marker not found')
+              s = root_line + en_url + '\n' + s[len(root_line):]
+              p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Verify bilingual signals
+        shell: bash
+        run: |
+          grep -F 'hreflang="en" href="https://zoudehupowersystem.github.io/en.html"' index.html
+          grep -F 'href="en.html" hreflang="en"' index.html
+          grep -F 'https://zoudehupowersystem.github.io/en.html' sitemap.xml
+          grep -F 'https://zoudehupowersystem.github.io/en.html' sitemap.txt
+
+      - name: Commit the one-time changes and remove this workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/bilingual-homepage.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sitemap.xml sitemap.txt .github/workflows/bilingual-homepage.yml
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Add bilingual homepage links and hreflang"
+          git push
