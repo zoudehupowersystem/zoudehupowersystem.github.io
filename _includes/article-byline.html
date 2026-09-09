@@ -1,0 +1,16 @@
+<div class="article-byline" aria-label="{% if page.lang == 'en' %}Article author and update date{% else %}文章作者与更新时间{% endif %}">
+  <span class="article-byline-label">{% if page.lang == 'en' %}Author{% else %}作者 / Author{% endif %}:</span>
+  {% if page.lang == 'en' %}
+    <a rel="author" href="{{ '/en.html' | relative_url }}" lang="en">Dehu Zou</a>
+    <span class="article-byline-sep">·</span>
+    <a rel="author" href="{{ '/' | relative_url }}" lang="zh-CN">邹德虎</a>
+  {% else %}
+    <a rel="author" href="{{ '/' | relative_url }}" lang="zh-CN">邹德虎</a>
+    <span class="article-byline-sep">·</span>
+    <a rel="author" href="{{ '/en.html' | relative_url }}" lang="en">Dehu Zou</a>
+  {% endif %}
+  {% if page.updated %}
+    <span class="article-byline-sep">·</span>
+    <span>{% if page.lang == 'en' %}Updated{% else %}更新 / Updated{% endif %}: {{ page.updated | date: '%Y-%m-%d' }}</span>
+  {% endif %}
+</div>
