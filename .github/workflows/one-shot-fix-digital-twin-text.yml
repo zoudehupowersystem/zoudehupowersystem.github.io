@@ -1,0 +1,46 @@
+name: One-shot fix digital twin text
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/one-shot-fix-digital-twin-text.yml'
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix encoded Chinese text
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('_includes/system-engineering-legacy.md')
+          text = p.read_text(encoding='utf-8')
+          if '数奷' not in text:
+              raise SystemExit('No corrupted text found')
+          text = text.replace('数奷', '数字')
+          p.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit fix and remove one-shot workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/one-shot-fix-digital-twin-text.yml
+          git add _includes/system-engineering-legacy.md
+          git commit -m "Fix digital twin section text encoding"
+          git push
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --url "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds" \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28"
