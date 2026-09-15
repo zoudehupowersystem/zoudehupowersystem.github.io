@@ -1,0 +1,54 @@
+name: One-shot polish power system engineering article
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/one-shot-polish-power-system-engineering.yml'
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  revise:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Revise and flatten article
+        run: python3 tools/revise_power_system_engineering.py
+
+      - name: Validate source
+        run: |
+          grep -q '^title: "论电力系统工程"' '论系统工程.md'
+          grep -q '^## 八、数字孪生辨析：数字表示怎样持续贴近真实电网$' '论系统工程.md'
+          grep -q '^## 九、把六个案例收束为一条工程证据链$' '论系统工程.md'
+          grep -q '^## 十、结语：把复杂性变成可以承担的责任$' '论系统工程.md'
+          grep -q 'ISO/IEC 30173:2023' '论系统工程.md'
+          grep -q 'NIST IR 8356' '论系统工程.md'
+          test ! -e '_includes/system-engineering-legacy.md'
+          ! grep -q 'legacy_sections\|system-engineering-legacy' '论系统工程.md'
+
+      - name: Commit revised article and remove one-shot files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm tools/revise_power_system_engineering.py
+          git rm .github/workflows/one-shot-polish-power-system-engineering.yml
+          git add '论系统工程.md' _includes
+          git commit -m "Restructure and polish 论电力系统工程"
+          git push
+
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --url "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds" \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" >/dev/null
