@@ -21,7 +21,18 @@ jobs:
           fetch-depth: 0
 
       - name: Revise and flatten article
-        run: python3 tools/revise_power_system_engineering.py
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tools/revise_power_system_engineering.py')
+          text = p.read_text(encoding='utf-8')
+          needle = "refs = refs.replace('公开网页核查日期为 2026-09-08', '公开网页核查日期为 2026-09-15')"
+          patch = needle + "\nrefs = refs.replace('并非调用 MATPOWER 所得。', '未调用 MATPOWER。')"
+          if needle not in text:
+              raise SystemExit('reference patch point not found')
+          p.write_text(text.replace(needle, patch, 1), encoding='utf-8')
+          PY
+          python3 tools/revise_power_system_engineering.py
 
       - name: Validate source
         run: |
@@ -33,6 +44,7 @@ jobs:
           grep -q 'NIST IR 8356' '论系统工程.md'
           test ! -e '_includes/system-engineering-legacy.md'
           ! grep -q 'legacy_sections\|system-engineering-legacy' '论系统工程.md'
+          ! grep -q '并非' '论系统工程.md'
 
       - name: Commit revised article and remove one-shot files
         env:
