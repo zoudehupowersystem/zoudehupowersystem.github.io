@@ -30,7 +30,11 @@ jobs:
           patch = needle + "\nrefs = refs.replace('并非调用 MATPOWER 所得。', '未调用 MATPOWER。')"
           if needle not in text:
               raise SystemExit('reference patch point not found')
-          p.write_text(text.replace(needle, patch, 1), encoding='utf-8')
+          text = text.replace(needle, patch, 1)
+          old = "自动电压控制 AVC 的价值，不是比本地 AVR 更频繁地修改给定值，而是协调多个资源在网络中的作用。"
+          new = "自动电压控制 AVC 的价值在于协调多个资源在网络中的作用，不能简化为比本地 AVR 更频繁地修改给定值。"
+          text = text.replace("    '### 6. AVC 应当分配可实现的任务，而不是重复下达愿望': '### 6. AVC 应当分配可实现的任务',", "    '### 6. AVC 应当分配可实现的任务，而不是重复下达愿望': '### 6. AVC 应当分配可实现的任务',\n    '" + old + "': '" + new + "',")
+          p.write_text(text, encoding='utf-8')
           PY
           python3 tools/revise_power_system_engineering.py
 
@@ -45,6 +49,7 @@ jobs:
           test ! -e '_includes/system-engineering-legacy.md'
           ! grep -q 'legacy_sections\|system-engineering-legacy' '论系统工程.md'
           ! grep -q '并非' '论系统工程.md'
+          ! grep -Pq '不是[^。\n]{0,80}而是' '论系统工程.md'
 
       - name: Commit revised article and remove one-shot files
         env:
