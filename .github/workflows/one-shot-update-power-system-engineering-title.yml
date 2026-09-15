@@ -1,5 +1,6 @@
 name: One-shot homepage article title sync
 
+# Triggered once to synchronize the renamed article on both homepages.
 on:
   push:
     branches:
