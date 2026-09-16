@@ -4,7 +4,7 @@ title: "From the Nelson River to PSCAD and RTDS: Manitoba’s Power-System Simul
 lang: en
 seo_title: "History of PSCAD and RTDS: Manitoba Hydro, EMTDC and Real-Time Simulation | Dehu Zou"
 description: "A technical history of Manitoba Hydro, Dennis Woodford, EMTDC/PSCAD, the Manitoba HVDC Research Centre, RTDS Technologies, the University of Manitoba, real-time EMT simulation, and the commercialization path from utility engineering problems to global simulation products."
-updated: "2026-09-07"
+updated: "2026-09-16"
 ---
 
 <!-- BLOG-TOPIC-START -->
@@ -30,7 +30,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica N
 
 # From the Nelson River to PSCAD and RTDS: Manitoba’s Power-System Simulation Story
 
-<div class="article-meta" style="margin:-4px 0 24px;color:#667085;font-size:.9rem;display:flex;gap:8px 18px;flex-wrap:wrap;"><span>Author: Dehu Zou</span><span>Updated: 2026-09-07</span></div>
+<div class="article-meta" style="margin:-4px 0 24px;color:#667085;font-size:.9rem;display:flex;gap:8px 18px;flex-wrap:wrap;"><span>Author: Dehu Zou</span><span>Updated: 2026-09-16</span></div>
 > How did a modest-sized electric utility in the middle of Canada help give rise to two world-class power-system simulation platforms? The story did not begin with a grand entrepreneurship plan. It began with a sequence of engineering problems that could not be avoided.
 
 The development of PSCAD and the RTDS Simulator around Manitoba Hydro is a rare end-to-end example in the power industry: **internal engineering problems drove joint research; research was tested against real systems; prototypes became products; and products eventually reached a global market**. The history is therefore useful not only as a technology story, but also as a case study in industrial innovation and R&D management.
@@ -46,6 +46,8 @@ Winnipeg, the provincial capital, lies at the confluence of the Red and Assinibo
 For Winnipeg, rivers have never been only lines on a map. They were once transportation corridors and later became part of the province's energy system.
 
 The defining physical feature of Manitoba's electric system is simple: **most major hydro resources are in the north, while most load is in the south**. The Nelson River basin contains large hydroelectric resources; Winnipeg and most of the province's demand are far away. Engineers therefore had to turn remote northern water into dependable electricity hundreds of kilometres to the south.
+
+Hydroelectric development in the Nelson River system also had long-term consequences for northern Cree communities. The Churchill River Diversion and related projects altered water levels and flooded land, affecting travel, fishing, hunting, and other traditional land uses. The 1977 Northern Flood Agreement and later implementation, compensation, and settlement agreements are a separate history that deserves fuller treatment; even in a technical history, omitting the issue entirely would remove part of the context.
 
 That geography made long-distance transmission unavoidable. Manitoba chose high-voltage direct current transmission, and the Nelson River HVDC project became the engineering backbone around which much of the later simulation work developed.
 
@@ -141,7 +143,7 @@ The Manitoba HVDC Research Centre was established in late 1981. Early support in
 
 The Centre should not be imagined as merely another department inside the utility. It had multi-party support and a mandate covering HVDC-related R&D, dissemination, and research facilities. Specialists from different organizations could be assembled around a problem. A 1987 article, for example, described cooperation among utility, equipment-company, and consulting personnel on leakage current, environmental conditions, and flashover behaviour. The operating problem existed in the field; the relevant knowledge was distributed among institutions; the Centre provided a place to combine it.
 
-The value of that arrangement was not the number of logos on a partnership chart. It was the ability to cross normal organizational boundaries and bring in the people who actually understood the problem. A utility sees operating phenomena but may not have enough staff dedicated to numerical algorithms. A university has research capability but may lack access to actual equipment parameters and disturbance records. A manufacturer understands its device but may not understand the entire system environment. The Research Centre connected these fragmented capabilities around concrete engineering questions.
+The arrangement allowed the Centre to cross normal organizational boundaries and bring in the people who actually understood the problem. A utility sees operating phenomena but may not have enough staff dedicated to numerical algorithms. A university has research capability but may lack access to actual equipment parameters and disturbance records. A manufacturer understands its device but may not understand the entire system environment. The Research Centre connected these fragmented capabilities around concrete engineering questions.
 
 ### 4. Being unable to afford an analog simulator did not automatically create RTDS
 
@@ -153,13 +155,13 @@ Entrepreneurship stories often compress everything after that into one sentence:
 
 The actual process was much less tidy.
 
-According to Rudi Wierckx's later recollection, an external company was initially contracted to develop a digital real-time simulator, but the effort did not achieve the required result. Under Woodford, a small internal team then continued the work.
+According to Rudi Wierckx's later recollection, an external company was initially contracted to develop a digital real-time simulator, but the effort did not achieve the required result. Under Woodford, a small internal team then continued the work. RTDS Technologies' later official timeline dates the start of this internal development project to **1986**.
 
 This was not a procurement substitution that succeeded automatically after a management decision. It involved failure, reorganization, and waiting for the right technical conditions.
 
 Advances in information technology, especially microelectronics, gradually made previously impractical ideas feasible. Early general-purpose processors were not fast enough for what the team wanted. New floating-point digital signal processors created an opening, and the structure of power networks provided opportunities for parallel computation.
 
-The key was not merely purchasing a faster chip. The algorithm, hardware partition, data exchange, and electrical-network representation had to be designed together.
+The algorithm, hardware partition, data exchange, and electrical-network representation had to be designed together.
 
 A power network contains physical coupling. If different parts are assigned to different processors, engineers must decide what information is exchanged every time step, when it is exchanged, how interfaces affect numerical accuracy, and how switching events are handled.
 
@@ -175,7 +177,9 @@ The team therefore had to cross three thresholds at once: the electrical model h
 
 ### 5. First make one filter branch run correctly
 
-Wierckx later recalled that the team's first demonstration was not a large AC/DC network of the kind that appears in modern brochures. It was simply a filter branch. Only afterwards did the work expand to small systems and then to networks closer to real grids.
+By **1989**, the Research Centre had achieved what RTDS Technologies now describes as the world's first real-time digital HVDC simulation. That date matters: digital real-time simulation had become a working HVDC research capability five years before the independent company was incorporated.
+
+Wierckx later recalled that the team's first demonstration was simply a filter branch, not a large AC/DC network of the kind that appears in modern brochures. Only afterwards did the work expand to small systems and then to networks closer to real grids.
 
 That detail is worth pausing over.
 
@@ -233,7 +237,9 @@ As outside interest increased, an organizational question became unavoidable: co
 
 Wierckx later recalled that the real-time digital simulator had originally been developed as a research tool for the Centre, not as the foundation of a new company. After technical work was published, companies such as Hitachi and ABB expressed interest and commercialization became a serious possibility.
 
-He also recalled that the Centre's non-profit status made its board reluctant to conduct full commercial operations inside the organization. In 1994, four employees who had participated in the development left the Centre and founded RTDS Technologies. The technology was made available to the new company under a royalty arrangement.
+**In 1993 the first commercial RTDS installation was delivered to Hitachi in Japan.** Ametani's later technical history states explicitly that the first RTDS was bought by Hitachi, Japan. The first commercial installation therefore preceded the independent company and was made while the product still sat within the Research Centre structure.
+
+The Centre's non-profit status made its board reluctant to carry a full commercial business indefinitely. In **1994**, four employees who had participated in the development left the Centre and founded RTDS Technologies. The technology was made available to the new company under a royalty arrangement. The early chronology is therefore 1986 project start, 1989 first real-time digital HVDC simulation, 1993 first commercial installation, and 1994 company formation.
 
 This was a decisive transition. The objective changed from “make it work” to “deliver it to someone else and remain responsible for it over time.”
 
@@ -243,7 +249,7 @@ The Research Centre retained a financial interest in the technology while the ne
 
 Wierckx described the early company as strongly engineer-led. At board level, major decisions were often discussed until consensus emerged instead of being settled by simple majority vote. That approach depended on a small team, shared experience, a clear technical direction, and considerable mutual trust.
 
-The lesson is not that every research team should collectively resign and form a company. It is that when a product grows beyond the natural operating boundary of its original institution, the organization needs a path that lets the product continue to develop without erasing the rights and contributions of the people and institutions that created it.
+The organizational lesson is about boundary changes: when a product grows beyond the natural operating scope of its original institution, it needs a path that supports further development while preserving the rights and contributions of its creators.
 
 ### 9. PSCAD followed a different commercialization path
 
@@ -299,7 +305,7 @@ One organizational feature stands out: **functions became more specialized, but 
 
 Public role descriptions and employee histories suggest that RTDS did not evolve into a structure where R&D “throws code over the wall” to testing, testing throws it to support, and a customer problem passes through several layers before reaching someone who understands the implementation. Many engineers combined model development with support, training, commissioning, or troubleshooting. Software developers participated in specification, testing, debugging, and post-release problem resolution.
 
-That does not mean RTDS lacked testing. Product assembly and testing became explicit functions, and models were repeatedly checked against benchmarks and physical devices. The point is that it is misleading to imagine a huge QA organization completely separated from development. RTDS resembles a specialized engineering company: it has division of labour, but technical staff still need to understand the path from a model to a customer's laboratory.
+RTDS did have explicit product-assembly and testing functions, and models were repeatedly checked against benchmarks and physical devices. Public material nevertheless does not support imagining a huge QA organization completely separated from development. RTDS resembles a specialized engineering company: it has division of labour, but technical staff still need to understand the path from a model to a customer's laboratory.
 
 This helps explain how a firm with only dozens of people could serve laboratories worldwide. Headquarters could not personally perform every routine activity in every country. RTDS used representatives, training, and local partners to build reach, while difficult technical problems were escalated to engineers in Winnipeg who understood the product internally.
 
@@ -429,27 +435,25 @@ This is why specialized industrial tools do not evolve like consumer electronics
 
 ### 16. The second wave: inverter-dominated power systems
 
-If the first wave forced EMT tools to deal with larger AC/DC systems, the second wave changed the role of those tools within the power industry itself.
+The first wave pushed EMT tools toward larger AC/DC networks. The second wave changed where those tools sit in the engineering process.
 
-Wind generation, photovoltaics, energy storage, and many other inverter-interfaced resources moved fast controls from a few HVDC and FACTS installations to thousands of connection points. In systems dominated by synchronous machines, engineers accumulated decades of intuition around rotor dynamics, excitation, and conventional protection. With large amounts of converter-interfaced generation, system response becomes more dependent on implementation details: phase-locked loops, current limiting, fault ride-through, control-mode switching, and interactions among controllers can determine the outcome of a disturbance.
+Wind generation, photovoltaics, energy storage, and other inverter-interfaced resources moved fast controls from a small number of HVDC and FACTS installations to thousands of connection points. In synchronous-machine-dominated systems, engineers accumulated decades of intuition around rotor dynamics, excitation, and conventional protection. With large amounts of converter-interfaced generation, phase-locked loops, current limits, fault ride-through logic, control-mode transitions, and interactions among controllers can directly determine the result of a disturbance.
 
-A device that is modest in MW rating can become important if it is connected to a weak local grid or if many controllers interact through the same network.
+A device with a modest MW rating can matter when it is connected to a weak local grid or when many controllers interact through the same network. Power flow, electromechanical transient simulation, and EMT simulation still have distinct roles; the model must retain the dynamics relevant to the phenomenon being studied.
 
-Power-electronic dominance does not invalidate synchronous-machine knowledge, nor does it imply that every study should use the most detailed EMT representation. Power flow, electromechanical transient simulation, and electromagnetic-transient simulation each have appropriate domains. The central modelling question is whether the chosen representation contains the phenomena relevant to the problem being studied.
+The **Blue Cut Fire disturbance of August 16, 2016** turned the question of model fidelity into a measurable operating event. Multiple faults occurred on a major transmission corridor in southern California. Following an 11:45 disturbance, nearly **1,200 MW** of solar photovoltaic generation ceased producing. NERC emphasized that the affected PV plants had not simply been disconnected by the transmission fault itself. Inverters stopped producing during the transient. The investigation identified, among other behaviours, inverter protection based on near-instantaneous frequency measurements that could misinterpret distorted fault waveforms, together with widespread use of momentary cessation when voltage moved outside specified ranges.
 
-For PSCAD and RTDS, this transition created both opportunity and difficulty.
+The scale revealed after the event was larger than one disturbance. In response to a NERC Alert, industry data indicated that more than **6,200 MW**, about **37%** of the reported installed inverter capacity, could be susceptible to the erroneous frequency-calculation/protection behaviour described in the report. By the end of August 2017 about 68% of the affected capacity had been corrected; by October 9, more than 97% of the transmission-connected PV inverters from the implicated manufacturer in the CAISO area had implemented the relevant changes.
 
-In the past, many users needed such tools primarily for a specific HVDC project. Today renewable integration, storage, system strength, local control interactions, and protection adaptation can all require EMT analysis.
+Those numbers make the modelling issue concrete. A study model that says only “several hundred megawatts of PV are connected here” may miss the mechanism that actually controls the disturbance if it does not represent the inverter's frequency measurement, low-voltage current-injection logic, recovery ramp, and software/control version.
 
-A larger user base does not mean a vendor can simply sell more copies of an old program. The number of device models increases, vendor controls become less transparent, parameters change more frequently, and problems increasingly cross traditional organizational boundaries.
+Australia provides a second, institutional example. AEMO's current Modelling Requirements require connection applicants to provide model packages that represent the physical structure and dynamic performance of their plant, and AEMO explicitly uses both PSS®E and **PSCAD™/EMTDC™** for connection studies. The R1 model package must be submitted at least three months before commissioning; validated R2 data and the model-verification report are due within three months after final commissioning tests. The model package is revised as the project moves through the connection process.
 
-The original path from utility engineering problem to simulation tool therefore did not end. It entered a more crowded and rapidly changing system.
+The workflow also has to accommodate intellectual property. AEMO stores non-releasable PSCAD/EMTDC models in restricted locations with access limited to selected authorized staff and consultants, and maintains model iterations through connection, commissioning, and ongoing operation. OEMs need to protect control implementation; the system operator needs models that can be executed, reproduced, and validated. Both requirements have to coexist in the same engineering process.
 
-The renewable-energy transition also shifted simulation from “Can we compute fast enough?” toward “Is the model information truthful and complete enough?”
+The hard numbers of the first wave were 26 racks, nearly 1,000 DSPs, 511 buses, and 1,306 buses. The hard constraints of the second wave increasingly include model version, field validation, controlled distribution, and change management. Computing power still matters, but a faster processor cannot reconstruct control logic that was never supplied or repair a model that no longer matches the device in service.
 
-No amount of computing power can reconstruct a control logic that was never provided. A solver can execute an incorrect model with extraordinary numerical precision and still produce an incorrect engineering conclusion.
-
-A new competitive dimension therefore appears: which platform can best host vendor models, protect necessary intellectual property, and still give system engineers models that are credible, executable, and verifiable?
+For PSCAD and RTDS, renewable integration, storage controls, system strength, local interactions, and protection adaptation expanded the market while pushing product competition toward vendor-model hosting, validation workflow, IP protection, and version governance. The original path from grid problem to simulation tool did not end; it entered a system with more models, more participants, and more complicated responsibility boundaries.
 
 ### 17. PSCAD's growth was not only about the solver
 
@@ -463,7 +467,7 @@ That path differed from RTDS's independent-company route. The two products share
 
 Over time, PSCAD's value increasingly included the entire workflow: not only how many seconds a simulation took, but how long modelling took, how easily errors could be found, whether hundreds of cases could be automated, and whether results could be audited and reproduced.
 
-That does not diminish the solver. On the contrary, only when the underlying numerical results are trustworthy is it worth building a large engineering workflow around them.
+The solver remains foundational: a large engineering workflow is worth building only when the underlying numerical results are trustworthy.
 
 By the early 2020s, PSCAD and RTDS had each accumulated a substantial technical base. They adapted to the two waves of larger AC/DC systems and inverter-dominated grids while continuing to support old projects. The engineering problems that created them never disappeared simply because the products became global.
 
@@ -471,7 +475,7 @@ But technological success does not produce a permanent happy ending. The more im
 
 ---
 
-## Part III — Toward the sale: technological success does not remove business problems
+## Part III — Organizational divergence and the sale: technological success does not remove business problems
 
 ### 18. World-class does not mean competition-free
 
@@ -507,19 +511,31 @@ Software and specialized technical equipment can be sold worldwide and their cor
 
 Hydroelectric utilities are also exposed to hydrology. Manitoba Hydro's 2021–22 annual report documented a severe drought and its financial consequences. The utility recorded a net loss attributable to Manitoba Hydro of approximately C$248 million that year.
 
-This does not make the technology businesses unimportant. It simply prevents us from confusing business scale and risk type. A highly valuable simulation company cannot make a capital-intensive public utility immune to drought, storms, and major infrastructure decisions.
+The distinction is one of business scale and risk type. A highly valuable simulation company cannot make a capital-intensive public utility immune to drought, storms, and major infrastructure decisions.
 
-### 20. RTDS changed owners
+### 20. PSCAD remained inside the provincial utility group
+
+During the same period, PSCAD followed a different organizational path. When Manitoba Hydro reorganized MHI in 2021, the business being gradually wound down was MHIUS international consulting. Manitoba Hydro's announcement explicitly said that MHI would continue as a subsidiary and that its technology-solutions lines would continue to operate and be marketed under the Manitoba Hydro International banner. PSCAD therefore remained inside the provincially owned utility group rather than following RTDS into an independent-company sale.
+
+In July 2024, the Province of Manitoba announced the restart of MHI's international consulting business and a process to rebuild the full scope of its operations, including technical and advisory services and international training. By March 2026 PSCAD was still publishing official material for version 5.1.0 and associated technical training. The 2021 contraction did not remove PSCAD from the market; it was an adjustment in the parent's business boundary followed by a later expansion.
+
+The Winnipeg technology ecosystem therefore produced two long-term organizational outcomes. RTDS operated independently for twenty-eight years before joining AMETEK, a listed industrial-technology group. PSCAD remained within Manitoba Hydro's wholly owned subsidiary structure. The former gained the platform of a larger instrumentation, sales, and capital organization; the latter retained its organizational link to the provincial utility and MHI's technology business.
+
+The contrast makes the question of organizational fit concrete. Different products can require different capital, distribution, governance, support, and R&D arrangements at different stages. The useful test is whether the chosen structure continues to support technical development, customers, and a clear allocation of responsibility and return.
+
+### 21. RTDS changed owners
 
 The main corporate story reaches 2022.
 
 In October of that year, AMETEK acquired RTDS Technologies. On November 1, AMETEK publicly announced two acquisitions including RTDS. In its quarterly filing with the U.S. Securities and Exchange Commission, AMETEK disclosed the consideration for the RTDS transaction separately: **C$325 million, approximately US$240 million, in cash.**
 
-The number is striking, but another question is more important: who actually sold what?
+The transaction structure first requires a distinction between MHI's economic rights and the equity held by RTDS's private shareholders.
 
 RTDS had already been an independent private company since 1994. The Research Centre and later related rights holders retained licensing and royalty relationships with the company. Manitoba Hydro did not simply wait until 2022 and then sell a software subsidiary that it had wholly owned all along.
 
 Manitoba Hydro's quarterly report for the nine months ended December 31, 2022 explains that, before closing, MHI's royalty entitlement was converted into RTDS equity and then disposed of in the transaction. That quarterly report recorded a gain of roughly C$68 million; the 2022–23 annual report reported a one-time gain of C$69 million and stated that the royalty stream would terminate.
+
+That side of the transaction can therefore be traced through Manitoba Hydro's public financial reports. The private-shareholder side is much less visible. In the company histories, founder interviews, AMETEK announcements, and regulatory filings reviewed for this article, I found no public statement from the selling shareholders or the acquirer explaining why the private shareholders chose to sell in 2022, and no public document that fully sets out the final pre-closing shareholder structure. Founder retirement, succession planning, or the service-network limits faced by a roughly 75-person specialist company are reasonable questions to investigate, but the available public evidence does not establish any of them as the transaction's direct cause. AMETEK explained the buyer's strategic logic; it did not disclose the sellers' decision process. The gap should remain visible rather than being filled with speculation.
 
 The organizational history can therefore be summarized more accurately as follows. Public institutions, a university, a utility, and industry partners helped incubate the technology. The product later operated as an independent company under a licence/royalty relationship. Decades later, an external strategic buyer acquired the company, and the old royalty relationship was converted and concluded as part of that transaction.
 
@@ -529,13 +545,13 @@ AMETEK publicly described the strategic logic in terms of grid modernization, re
 
 From a technology-history perspective, the acquisition closes a circle. RTDS was created to help engineers understand HVDC systems and their protection and controls. When it was acquired, the buyer still valued the need to validate increasingly complex grids—only the range of devices and applications had become much broader.
 
-### 21. Is a sale the final proof of success, or the beginning of another responsibility?
+### 22. After the sale: commercialization success and continuing responsibility
 
 RTDS operated independently for more than two decades between its 1994 incorporation and the 2022 acquisition. If one starts from the earlier real-time digital simulation research, the technical history is longer still.
 
 The transaction can certainly be viewed as a commercialization success. A tool developed initially because an institution needed a better and less expensive research capability became a global industrial product valuable enough to attract a large strategic acquirer.
 
-But this history is not a contract template that can be copied into another jurisdiction. Intellectual-property rules, employee invention law, public funding conditions, the allocation of continuing R&D contributions, and corporate governance differ across countries and institutions. The transferable lesson is more general: when a product is still small, the relationships among contributors should be structured in a way that can survive growth, changes in control, and decades of further development.
+This history is useful as a comparison case, not as a contract template for another jurisdiction. Intellectual-property rules, employee invention law, public funding conditions, the allocation of continuing R&D contributions, and corporate governance differ across countries and institutions. The transferable lesson is more general: when a product is still small, the relationships among contributors should be structured in a way that can survive growth, changes in control, and decades of further development.
 
 The entrepreneurial history itself ends here.
 
@@ -549,7 +565,7 @@ Return to Manitoba.
 
 The province did not cease to experience winter, storms, drought, or transmission risk simply because it produced world-class simulation tools. The Nelson River still follows its hydrology. Transmission lines still cross real land. Winnipeg still depends on reliable physical infrastructure.
 
-What makes PSCAD and RTDS distinctive is not that they removed those constraints. They converted part of the ability to understand and manage them from the experience of a small group of specialists into tools that many engineers could use, test, and continue to develop.
+PSCAD and RTDS converted part of the ability to understand and manage those constraints from the experience of a small group of specialists into tools that many engineers could use, test, and continue to develop.
 
 The path included an engineer sketching a solver, a research centre unable to afford an analog simulator, a team making a single filter branch work, physical controllers bringing real problems into the laboratory, and simulation tests finding problems before commissioning. It included doctoral research becoming a software model, international researchers joining development work, engineers leaving a research centre to form a company, and technology-source organizations still receiving benefits decades later under agreements created in the early years.
 
@@ -567,7 +583,7 @@ Early users should not merely act as friendly supporters of a new tool. They sho
 
 **Second: can research enter the product, while the product continues to generate new research questions?**
 
-A paper entering a model library requires implementation, testing, documentation, and maintenance. Once the model is used in engineering, it reveals operating conditions that the original publication did not cover. The most valuable university–industry relationship is not the periodic signing of a new agreement, but a channel through which questions and results can continue to move in both directions.
+A paper entering a model library requires implementation, testing, documentation, and maintenance. Once the model is used in engineering, it reveals operating conditions that the original publication did not cover. The most valuable university–industry relationship is a channel through which questions and results continue to move in both directions.
 
 Evaluation systems should therefore recognize work that is less visible but essential: improving numerical robustness, maintaining regression cases, documenting parameter sources, strengthening interfaces, and fixing difficult defects. These tasks need clear owners and professional value.
 
@@ -577,19 +593,17 @@ Exploration also needs room, but with clear technical accountability. A filter b
 
 **Third: can the capability be placed inside an organization appropriate to its stage of development?**
 
-A research centre, a department of a parent organization, an independent company, a licence arrangement, and a later strategic acquisition are not simply “better” or “worse” organizational forms. They solve different problems and create different constraints.
+A research centre, a department of a parent organization, an independent company, a licence arrangement, and a later strategic acquisition fit different stages and create different constraints.
 
 In the early stage, when work depends on shared facilities and people from multiple institutions, forcing every research task to behave like a standalone profit centre may be counterproductive. Once a product serves international customers, running it indefinitely as an internal research project may also become inappropriate. When control changes, the rights of early contributors, the value of continuing investment, and future product responsibility all have to be addressed.
 
-The value of an organizational arrangement should therefore be judged by whether it helps the technology continue to improve, helps users continue to receive support, and allocates risk and reward clearly—not merely by whether the corporate name changes.
+An organizational arrangement can be judged by whether the technology continues to improve, users continue to receive support, and risk and reward remain clearly allocated. A change of corporate name does not answer those questions by itself.
 
-This article reaches a company sale, but it is not a manual for how to sell a company.
+The company sale is one organizational transition in a longer technical history.
 
 It is a story about how, beside a very large physical power project, another kind of capability emerged—one that could travel much farther than the transmission line itself. It is also a story about how a group of engineers moved from “only we know how to do this” toward “people who have never met us can perform the task reliably.”
 
-The most important moment in a world-class engineering tool's history may therefore not be the first shipment and not the acquisition announcement.
-
-It may be the day when an engineer on another continent uses the tool to discover a flaw in a control strategy, correct a model, or keep a problem in the laboratory instead of allowing it to reach the operating grid.
+The value of a world-class engineering tool ultimately appears in use: an engineer on another continent discovers a flaw in a control strategy, corrects a model, or keeps a problem in the laboratory instead of allowing it to reach the operating grid.
 
 That engineer may never have visited Winnipeg or seen the Nelson River.
 
@@ -703,7 +717,7 @@ But Manitoba's engineering history has already become part of that engineer's wo
 
 [54] Dommel, H. W. **Digital Computer Solution of Electromagnetic Transients in Single- and Multiphase Networks**. *IEEE Transactions on Power Apparatus and Systems*, 1969, PAS-88(4): 388–399. DOI: 10.1109/TPAS.1969.292459.
 
-[55] Ametani, A. **Electromagnetic Transients Program: History and Future**. *IEEJ Transactions on Electrical and Electronic Engineering*, 2021, 16: 1150–1158. DOI: 10.1002/tee.23192.
+[55] Ametani, A. **Electromagnetic Transients Program: History and Future**. *IEEJ Transactions on Electrical and Electronic Engineering*, 2021, 16: 1150–1158. DOI: 10.1002/tee.23192. Also records the first RTDS prototype in 1989, the first RTDS purchase by Hitachi in Japan in 1993, and the formation of RTDS Technologies in 1994.
 
 [56] Wierckx, R. P. **Fully Digital Real-Time Electromagnetic Transients Simulator**. IERE International Electric Research Exchange, Workshop on New Issues in Power System Simulation, Caen, France, 1992: 201–228. https://knowledge.rtds.com/hc/en-us/articles/1500005391421-Fully-Digital-Real-Time-Electromagnetic-Transients-Simulator.
 
@@ -716,3 +730,5 @@ But Manitoba's engineering history has already become part of that engineer's wo
 [60] Park, I. K.; Lee, J.; Song, J.; Kim, Y.; Kim, T. **Large-scale AC/DC EMT Level System Simulations by a Real Time Digital Simulator (RTDS) in KEPRI-KEPCO**. *KEPCO Journal on Electric Power and Energy*, 2017, 3(1): 17–21. DOI: 10.18770/KEPCO.2017.03.01.017.
 
 [61] RTDS Technologies. **Practical Use of Real Time Simulation for De-risking HVDC Integration**. Technical presentation, c. 2020–2021. https://knowledge.rtds.com/hc/en-us/article_attachments/360102163454.
+
+[62] RTDS Technologies. **History of Real-Time Simulation**. Official training/technical presentation timeline listing the RTDS development project start in 1986, the world's first real-time digital HVDC simulation in 1989, the first commercial installation in 1993, and creation of RTDS Technologies Inc. in 1994. https://knowledge.rtds.com/hc/en-us/article_attachments/360069828073.
