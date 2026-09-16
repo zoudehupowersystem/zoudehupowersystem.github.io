@@ -1,4 +1,4 @@
-name: Revise system engineering device chapter
+name: Finalize device engineering integration
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
   pages: write
 
 jobs:
-  revise:
+  finalize:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
@@ -20,66 +20,59 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Revise article
-        env:
-          CHAPTER_Z: >-
-            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
+      - name: Integrate chapter into evidence chain and conclusion
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import base64, os, re, zlib
 
           p = Path('论系统工程.md')
           text = p.read_text(encoding='utf-8')
 
-          if '## 五、装置工程：装置为什么不能脱离系统单独设计' in text:
-              print('Device engineering chapter already present; no article change required.')
-              raise SystemExit(0)
+          replacements = [
+              ('## 十、把六个案例收束为一条工程证据链', '## 十、把七个案例收束为一条工程证据链'),
+              ('## 十、结语：把复杂性变成可以承担的责任', '## 结语：把复杂性变成可以承担的责任'),
+              ('回看全文，频率响应、电压控制、保护与安全防线、分层仿真、模型管理和工业软件表面上属于不同专业，底层却反复出现同一类问题：边界怎样划定，模型保留什么，接口传递什么，约束在哪里生效，结论凭什么可信，系统变化以后谁负责重新评价。',
+               '回看全文，频率响应、电压控制、保护与安全防线、装置工程、分层仿真、模型管理和工业软件表面上属于不同专业，底层却反复出现同一类问题：边界怎样划定，模型保留什么，接口传递什么，约束在哪里生效，结论凭什么可信，系统变化以后谁负责重新评价。'),
+              ('局部技术可以非常成熟，系统结果仍取决于它们怎样连接。分层控制需要处理耦合，三道防线需要处理资源共享和失效路径，多类模型需要处理适用范围和接口一致性，数字孪生则把模型、数据、配置和运行反馈放进更连续的数字闭环。',
+               '局部技术可以非常成熟，系统结果仍取决于它们怎样连接。分层控制需要处理耦合，三道防线需要处理资源共享和失效路径，装置工程需要处理系统需求与本体约束之间的能力边界，多类模型需要处理适用范围和接口一致性，数字孪生则把模型、数据、配置和运行反馈放进更连续的数字闭环。')
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  raise RuntimeError(f'Expected text not found: {old[:40]}')
+              text = text.replace(old, new, 1)
 
-          old_intro = '全文可以分三层阅读。第一章先说明需求、边界和责任；第二至四章讨论真实电网在频率、电压和故障防御问题中怎样运动；第五至七章讨论我们怎样选择模型、管理多版本电网并让工业软件进入安全闭环；第八章辨析数字孪生，第九章再把前面的案例收束为一条工程证据链。'
-          placeholder = '__DEVICE_ENGINEERING_NEW_INTRO__'
-          if old_intro not in text:
-              raise RuntimeError('Expected article overview paragraph not found.')
-          text = text.replace(old_intro, placeholder, 1)
-
-          text = text.replace('seo_title: "论电力系统工程：从系统工程主线到频率、电压、安全防线、模型、软件与数字孪生｜邹德虎 Dehu Zou"',
-                              'seo_title: "论电力系统工程：从系统工程主线到频率、电压、安全防线、装置、模型、软件与数字孪生｜邹德虎 Dehu Zou"', 1)
-          text = text.replace('description: "从需求、边界、模型、接口、反馈、约束、验证与运行演化出发，以频率响应、电压控制、安全防线、分层仿真、模型管理、工业软件和数字孪生为线索，讨论电力系统工程的方法与证据闭环。"',
-                              'description: "从需求、边界、模型、接口、反馈、约束、验证与运行演化出发，以频率响应、电压控制、安全防线、装置工程、分层仿真、模型管理、工业软件和数字孪生为线索，讨论电力系统工程的方法与证据闭环。"', 1)
-          text = re.sub(r'^updated:\s*"?[0-9-]+"?\s*$', 'updated: "2026-09-16"', text, count=1, flags=re.M)
-          text = re.sub(r'<span>修订：[0-9-]+</span>', '<span>修订：2026-09-16</span>', text, count=1)
-
-          for old, new in [('## 九、', '## 十、'), ('## 八、', '## 九、'), ('## 七、', '## 八、'), ('## 六、', '## 七、'), ('## 五、', '## 六、')]:
-              text = text.replace(old, new)
-          for old, new in [('第九章', '第十章'), ('第八章', '第九章'), ('第七章', '第八章'), ('第六章', '第七章'), ('第五章', '第六章')]:
-              text = text.replace(old, new)
-
-          new_intro = '全文可以分三层阅读。第一章先说明需求、边界和责任；第二至四章讨论真实电网在频率、电压和故障防御问题中怎样运动；第五章讨论系统功能怎样落实到具体装置，以及装置研发、部署和运行为什么仍然是系统工程；第六至八章讨论我们怎样选择模型、管理多版本电网并让工业软件进入安全闭环；第九章辨析数字孪生，第十章再把前面的案例收束为一条工程证据链。'
-          text = text.replace(placeholder, new_intro, 1)
-
-          chapter = zlib.decompress(base64.b64decode(os.environ['CHAPTER_Z'])).decode('utf-8')
-          marker = '## 六、潮流、机电暂态与电磁暂态：为什么模型必须并存'
-          if marker not in text:
-              raise RuntimeError('Renumbered model chapter marker not found.')
-          text = text.replace(marker, chapter + marker, 1)
-
-          if text.count('## 五、装置工程：装置为什么不能脱离系统单独设计') != 1:
-              raise RuntimeError('Unexpected device engineering chapter count.')
+          anchor = '| 故障后防御路径有效 | 实际切除时间、后备拓扑、共享资源和通信异常 | 端到端试验、时序分析、稳定计算与事件记录 | 保护、稳控、通信、调度及运维人员 |\n'
+          device_row = '| 装置能够在系统中承担预期功能 | 系统场景、功能分配、平台与接口、硬件能力边界以及限流和失效状态 | 需求追溯、架构评审、整机与 HIL 试验、现场联调及运行事件 | 系统分析、装置研发、试验、厂站及运维人员 |\n'
+          if device_row not in text:
+              if anchor not in text:
+                  raise RuntimeError('Evidence table insertion anchor not found.')
+              text = text.replace(anchor, anchor + device_row, 1)
 
           p.write_text(text, encoding='utf-8')
+
+          sm = Path('sitemap.xml')
+          if sm.exists():
+              sitemap = sm.read_text(encoding='utf-8')
+              target = '<loc>https://zoudehupowersystem.github.io/%E8%AE%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B.html</loc>'
+              pos = sitemap.find(target)
+              if pos >= 0:
+                  tail = sitemap[pos:pos+300]
+                  tail2 = tail.replace('<lastmod>2026-09-15</lastmod>', '<lastmod>2026-09-16</lastmod>', 1)
+                  sitemap = sitemap[:pos] + tail2 + sitemap[pos+len(tail):]
+                  sm.write_text(sitemap, encoding='utf-8')
           PY
 
-      - name: Commit article and rebuild Pages
+      - name: Commit final integration and rebuild Pages
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if git diff --quiet -- '论系统工程.md'; then
+          if git diff --quiet -- '论系统工程.md' sitemap.xml; then
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- '论系统工程.md'
-          git commit -m "Add device engineering chapter to system engineering article [skip ci]"
+          git add -- '论系统工程.md' sitemap.xml
+          git commit -m "Integrate device engineering into evidence chain and conclusion [skip ci]"
           git push
 
           curl --fail-with-body --silent --show-error \
