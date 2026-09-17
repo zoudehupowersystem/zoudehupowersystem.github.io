@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>邹德虎（Dehu Zou）｜电力系统仿真、调度自动化与工业软件研发</title>
-  <meta name="description" content="邹德虎（Dehu Zou），高级工程师、电力系统研发架构师。长期从事电力系统建模仿真、实时电磁暂态仿真（EMT）、电网调度自动化与工业软件研发，ADS-RTSim 实时仿真平台负责人，OPSEN 开源项目发起人。" />
+  <title>邹德虎（Dehu Zou）｜电力系统仿真、调度自动化、ZRTDB 与 PowerTool</title>
+  <meta name="description" content="邹德虎（Dehu Zou），高级工程师、电力系统研发架构师。长期从事电力系统建模仿真、实时电磁暂态仿真（EMT）、电网调度自动化与工业软件研发；公开维护 ZRTDB 零拷贝实时数据总线与 PowerTool 电力系统工程计算工具。" />
   <meta name="theme-color" content="#0B1F3A" />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
   <link rel="me" href="https://orcid.org/0000-0002-3359-0145" />
@@ -16,13 +16,13 @@
   <link rel="alternate" hreflang="x-default" href="https://zoudehupowersystem.github.io/" />
   <meta property="og:type" content="profile" />
   <meta property="og:site_name" content="邹德虎 · Dehu Zou" />
-  <meta property="og:title" content="邹德虎（Dehu Zou）｜电力系统仿真、调度自动化与工业软件研发" />
-  <meta property="og:description" content="邹德虎（Dehu Zou），高级工程师、电力系统研发架构师。长期从事电力系统建模仿真、实时电磁暂态仿真（EMT）、电网调度自动化与工业软件研发。" />
+  <meta property="og:title" content="邹德虎（Dehu Zou）｜电力系统研发 · ZRTDB · PowerTool" />
+  <meta property="og:description" content="电力系统建模仿真、实时 EMT、调度自动化与工业软件研发；ZRTDB 与 PowerTool 官方主页入口。" />
   <meta property="og:url" content="https://zoudehupowersystem.github.io/" />
   <meta property="og:image" content="https://zoudehupowersystem.github.io/zoudehu.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="邹德虎（Dehu Zou）｜电力系统仿真、调度自动化与工业软件研发" />
-  <meta name="twitter:description" content="电力系统建模仿真、实时 EMT、调度自动化与工业软件研发。" />
+  <meta name="twitter:title" content="邹德虎（Dehu Zou）｜ZRTDB · PowerTool · Power Systems" />
+  <meta name="twitter:description" content="电力系统建模仿真、实时 EMT、调度自动化与工业软件研发；ZRTDB 与 PowerTool 官方 GitHub 项目。" />
   <meta name="twitter:image" content="https://zoudehupowersystem.github.io/zoudehu.jpg" />
   <script type="application/ld+json">
   {
@@ -32,7 +32,7 @@
     "url": "https://zoudehupowersystem.github.io/",
     "name": "邹德虎（Dehu Zou）个人主页",
     "description": "邹德虎（Dehu Zou），高级工程师、电力系统研发架构师。长期从事电力系统建模仿真、实时电磁暂态仿真（EMT）、电网调度自动化与工业软件研发。",
-    "dateModified": "2026-09-15T09:55:00+08:00",
+    "dateModified": "2026-09-17T17:00:00+08:00",
     "mainEntity": {
       "@type": "Person",
       "@id": "https://zoudehupowersystem.github.io/#dehu-zou",
@@ -825,6 +825,8 @@
 
             <div class="quick-actions">
               <a class="btn primary" href="blog.html"><strong>文章</strong><span class="mono">Blog</span></a>
+              <a class="btn" href="https://github.com/zoudehupowersystem/ZRTDB" target="_blank" rel="noopener noreferrer"><strong>ZRTDB</strong><span class="mono">GitHub ↗</span></a>
+              <a class="btn" href="https://github.com/zoudehupowersystem/power_tool" target="_blank" rel="noopener noreferrer"><strong>PowerTool</strong><span class="mono">GitHub ↗</span></a>
               <a class="btn" href="#experience"><strong>履历</strong><span class="mono">Experience</span></a>
               <a class="btn" href="#papers"><strong>代表成果</strong><span class="mono">Work</span></a>
               <a class="btn" href="#contact"><strong>联系</strong><span class="mono">Contact</span></a>
@@ -866,6 +868,24 @@
       </div>
 
       <div class="main">
+        <!-- OPEN SOURCE PROJECTS -->
+        <div class="section" id="opensource">
+          <h2>已发布开源项目</h2>
+          <div class="section-note">以下 GitHub 仓库为项目官方发布源，可直接查看源码、README、版本历史与更新记录。</div>
+          <div class="two-col">
+            <div class="card">
+              <h3 style="margin:0 0 8px;color:rgba(255,255,255,.94);font-size:18px;">ZRTDB <span class="mono" style="font-size:12px;color:var(--faint);">Zero-copy Real-Time Data Bus</span></h3>
+              <p style="margin:0 0 12px;">面向实时控制、SCADA 与工业边缘计算的零拷贝实时数据总线。采用共享内存、静态建模与固定偏移访问，强调确定性时延和工程可运维性。</p>
+              <a class="btn primary" href="https://github.com/zoudehupowersystem/ZRTDB" target="_blank" rel="noopener noreferrer"><strong>访问 ZRTDB 官方 GitHub</strong><span class="mono">zoudehupowersystem/ZRTDB ↗</span></a>
+            </div>
+            <div class="card">
+              <h3 style="margin:0 0 8px;color:rgba(255,255,255,.94);font-size:18px;">PowerTool <span class="mono" style="font-size:12px;color:var(--faint);">power_tool</span></h3>
+              <p style="margin:0 0 12px;">面向电力系统工程近似计算、参数换算、波形分析、稳定性分析与快速校核的轻量桌面工具，提供中英文 GUI。</p>
+              <a class="btn primary" href="https://github.com/zoudehupowersystem/power_tool" target="_blank" rel="noopener noreferrer"><strong>访问 PowerTool 官方 GitHub</strong><span class="mono">zoudehupowersystem/power_tool ↗</span></a>
+            </div>
+          </div>
+        </div>
+
         <!-- ARTICLES -->
         <div class="section" id="articles">
           <h2>博客文章</h2>
@@ -1129,6 +1149,7 @@
           <h2>行业、学术与开源服务</h2>
           <div class="card">
             <ul class="list service-list">
+              <li>公开发布并维护 <a href="https://github.com/zoudehupowersystem/ZRTDB" target="_blank" rel="noopener noreferrer"><strong>ZRTDB</strong></a>（零拷贝实时数据总线）与 <a href="https://github.com/zoudehupowersystem/power_tool" target="_blank" rel="noopener noreferrer"><strong>PowerTool</strong></a>（电力系统工程计算工具），GitHub 账号 zoudehupowersystem 为官方发布源。</li>
               <li>OPSEN 开源项目发起人与维护者（GitHub：zoudehupowersystem，2025–至今），围绕电力系统建模、仿真、分析与应用构建开源工具生态。</li>
               <li>IEEE 2025 第三届电力科学与技术国际会议（ICPST 2025）T2 分会场主席（Session Chair）。</li>
               <li>参与编写国家标准 GBT 40616-2021《村镇光伏发电站集群控制系统仿真测试技术要求》。</li>
