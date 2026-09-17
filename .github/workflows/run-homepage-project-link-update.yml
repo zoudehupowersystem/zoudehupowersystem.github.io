@@ -1,0 +1,32 @@
+name: Run homepage project-link update
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    if: github.event.issue.title == '[internal] apply homepage project links'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update Chinese and English homepages
+        run: python3 .github/scripts/add_official_project_links.py
+
+      - name: Commit and push
+        run: |
+          git add index.html en.html
+          if git diff --cached --quiet; then
+            echo "No changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Feature ZRTDB and PowerTool on homepages"
+          git push
