@@ -1,16 +1,16 @@
 "从物理学出发理解电力系统.md":
   - { title: "深入理解潮流计算", url: "/深入理解潮流计算.html", lang: "zh-CN" }
-  - { title: "矩阵思维下的潮流计算", url: "/矩阵思维下的潮流计算.html", lang: "zh-CN" }
-  - { title: "短路与短路比", url: "/短路与短路比.html", lang: "zh-CN" }
+  - { title: "从音乐到电力系统一次调频", url: "/从音乐到电力系统一次调频.html", lang: "zh-CN" }
+  - { title: "电力系统控制的思考", url: "/电力系统控制的思考.html", lang: "zh-CN" }
 
 "深入理解潮流计算.md":
   - { title: "矩阵思维下的潮流计算", url: "/矩阵思维下的潮流计算.html", lang: "zh-CN" }
-  - { title: "重温牛顿-拉夫逊法", url: "/重温牛顿-拉夫逊法.html", lang: "zh-CN" }
+  - { title: "谈谈电力系统状态估计", url: "/谈谈电力系统状态估计.html", lang: "zh-CN" }
   - { title: "From Ybus to an Industrial-Grade Power Flow Solver", url: "/ac-power-flow-ybus-newton.html", lang: "en", note: "EN" }
 
 "矩阵思维下的潮流计算.md":
   - { title: "深入理解潮流计算", url: "/深入理解潮流计算.html", lang: "zh-CN" }
-  - { title: "重温牛顿-拉夫逊法", url: "/重温牛顿-拉夫逊法.html", lang: "zh-CN" }
+  - { title: "谈谈电力系统状态估计", url: "/谈谈电力系统状态估计.html", lang: "zh-CN" }
   - { title: "From Ybus to an Industrial-Grade Power Flow Solver", url: "/ac-power-flow-ybus-newton.html", lang: "en", note: "EN" }
 
 "重温牛顿-拉夫逊法.md":
@@ -61,7 +61,7 @@
 "曼尼托巴水电局的创业史.md":
   - { title: "From the Nelson River to PSCAD and RTDS", url: "/manitoba-hydro-pscad-rtds-history.html", lang: "en", note: "EN" }
   - { title: "论电力系统仿真", url: "/论电力系统仿真.html", lang: "zh-CN" }
-  - { title: "电力系统仿真会议参会记录", url: "/电力系统仿真会议参会记录.html", lang: "zh-CN" }
+  - { title: "职业生涯回顾与思考", url: "/职业生涯回顾与思考.html", lang: "zh-CN" }
 
 "manitoba-hydro-pscad-rtds-history.md":
   - { title: "曼尼托巴水电局的创业史", url: "/曼尼托巴水电局的创业史.html", lang: "zh-CN", note: "ZH" }
@@ -70,7 +70,7 @@
 
 "电网调度技术思考.md":
   - { title: "谈谈电力系统状态估计", url: "/谈谈电力系统状态估计.html", lang: "zh-CN" }
-  - { title: "论电力数字化转型", url: "/论电力数字化转型.html", lang: "zh-CN" }
+  - { title: "电力系统控制的思考", url: "/电力系统控制的思考.html", lang: "zh-CN" }
   - { title: "电力系统二次设备科普", url: "/电力系统二次设备科普.html", lang: "zh-CN" }
 
 "论电力系统仿真.md":
@@ -101,16 +101,16 @@
 "论电力数字化转型.md":
   - { title: "工业系统演化与设计", url: "/工业系统演化与设计.html", lang: "zh-CN" }
   - { title: "论系统工程", url: "/论系统工程.html", lang: "zh-CN" }
-  - { title: "电网调度技术思考", url: "/电网调度技术思考.html", lang: "zh-CN" }
+  - { title: "论电力安全生产", url: "/论电力安全生产.html", lang: "zh-CN" }
 
 "工业系统演化与设计.md":
   - { title: "论系统工程", url: "/论系统工程.html", lang: "zh-CN" }
-  - { title: "论电力数字化转型", url: "/论电力数字化转型.html", lang: "zh-CN" }
+  - { title: "职业生涯回顾与思考", url: "/职业生涯回顾与思考.html", lang: "zh-CN" }
   - { title: "论电力安全生产", url: "/论电力安全生产.html", lang: "zh-CN" }
 
 "论系统工程.md":
-  - { title: "工业系统演化与设计", url: "/工业系统演化与设计.html", lang: "zh-CN" }
-  - { title: "论电力数字化转型", url: "/论电力数字化转型.html", lang: "zh-CN" }
+  - { title: "从音乐到电力系统一次调频", url: "/从音乐到电力系统一次调频.html", lang: "zh-CN" }
+  - { title: "论电力安全生产", url: "/论电力安全生产.html", lang: "zh-CN" }
   - { title: "职业生涯回顾与思考", url: "/职业生涯回顾与思考.html", lang: "zh-CN" }
 
 "电力系统中的编程语言.md":
