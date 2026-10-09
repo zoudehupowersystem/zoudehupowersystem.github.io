@@ -210,7 +210,7 @@ Hingorani did not invent power-electronics technology. His pioneering achievemen
 
 Woodford wrote the first EMTDC code at Manitoba Hydro in 1975 to provide a sufficiently flexible and powerful tool for analyzing complex HVDC systems. Later, EMTDC was combined with the **Power Systems Computer Aided Design (PSCAD)** graphical interface to produce the globally used PSCAD/EMTDC simulation platform. His 1983 paper with A. M. Gole and R. W. Menzies, "Digital Simulation of DC Links and AC Machines," was a representative early publication from this technical trajectory [29].
 
-Woodford's influence also extended to real-time digital simulation. In 1986, he became executive director of the Manitoba HVDC Research Centre. In 1989, the team produced one of the world's earliest real-time digital HVDC simulations. Related technology subsequently evolved into the **Real Time Digital Simulator (RTDS)**, commercialized in 1994 by RTDS Technologies, a company founded by members of the research team.
+Woodford's influence also extended to real-time digital simulation. In 1986, he became executive director of the Manitoba HVDC Research Centre. In 1989, the team produced what [RTDS Technologies](https://www.rtds.com/about-rtds-technologies) identifies as the **world's first real-time digital HVDC simulation**. Related technology subsequently evolved into the **Real Time Digital Simulator (RTDS)**, commercialized in 1994 by RTDS Technologies, a company founded by members of the research team.
 
 ### Tomas Enciso Dy-Liacco: Operating States, Security Control, and the Foundations of Modern Energy Control Centers
 
@@ -266,7 +266,7 @@ At the same time, growing system size meant that **having a model no longer guar
 
 Built on these computational capabilities, Carpentier's OPF formulation connected economic objectives with network physical constraints, while Dommel and Tinney advanced its practical numerical solution. Dy-Liacco established a security-control framework built around normal, emergency, and restorative operating states. Schweppe's state estimation allowed control centers to infer credible operating conditions from imperfect measurements, and his spot-pricing research connected network constraints to economic signals. Phadke advanced digital protective relaying and synchronized phasor measurement; Schweitzer promoted large-scale engineering deployment of digital relays, further integrating measurement, protection, recording, and communication.
 
-Together, these advances supported computer-based dispatch automation and EMS platforms, and provided essential models, algorithms, and information-processing capabilities for spot electricity trading. Electricity markets were not simply "invented" by one individual or paper: market development also requires rules, metering, communications, and institutions. Nevertheless, security assessment, optimal dispatch, and market clearing in a modern large power system cannot function without practical computing systems. The grid had become more than a physical network for transporting energy; it had become a complex engineered system that could be **continuously observed, calculated, protected, optimized, controlled, and traded through**.
+Together, these advances supported computer-based dispatch automation and EMS platforms, and provided essential models, algorithms, and information-processing capabilities for spot electricity trading. Electricity markets were not simply "invented" by one individual or paper: market development also requires rules, metering, communications, and institutions. Nevertheless, security assessment, optimal dispatch, and market clearing in a modern large power system cannot function without practical computing systems. The grid had become more than a physical network for transporting energy; it had become a complex engineered system that could be **continuously monitored, analyzed, protected, optimized, and controlled—and could support electricity trading**.
 
 ### Stage 4: The Present and Future — Renewable Energy, Distributed Resources, and Multi-Actor Coordination
 
@@ -288,7 +288,7 @@ Viewed through these four stages, the central trajectory of modern power systems
 
 [3] SCHWEPPE F C, WILDES J. Power system static-state estimation, Part I: Exact model[J]. *IEEE Transactions on Power Apparatus and Systems*, 1970, PAS-89(1): 120–125. DOI: 10.1109/TPAS.1970.292678.
 
-[4] SCHWEPPE F C, CARAMANIS M C, TABORS R D, et al. *Spot pricing of electricity*[M]. Boston: Kluwer Academic Publishers, 1988. DOI: 10.1007/978-1-4613-1683-1.
+[4] SCHWEPPE F C, CARAMANIS M C, TABORS R D, BOHN R E. *Spot pricing of electricity*[M]. Boston: Kluwer Academic Publishers, 1988. DOI: 10.1007/978-1-4613-1683-1.
 
 [5] TINNEY W F, WALKER J W. Direct solutions of sparse network equations by optimally ordered triangular factorization[J]. *Proceedings of the IEEE*, 1967, 55(11): 1801–1809. DOI: 10.1109/PROC.1967.6011.
 
@@ -342,7 +342,7 @@ Viewed through these four stages, the central trajectory of modern power systems
 
 [30] DY LIACCO T E. The adaptive reliability control system[J]. *IEEE Transactions on Power Apparatus and Systems*, 1967, PAS-86(5): 517–531. DOI: 10.1109/TPAS.1967.291728.
 
-[31] CARPENTIER J. Contribution à l'étude du dispatching économique[J]. *Bulletin de la Société Française des Électriciens*, série 8, vol. 3: 431–447.
+[31] CARPENTIER J. Contribution à l'étude du dispatching économique[J]. *Bulletin de la Société Française des Électriciens*, 1962, série 8, vol. 3: 431–447.
 
 [32] CARPENTIER J. Optimal power flows[J]. *International Journal of Electrical Power & Energy Systems*, 1979, 1(1): 3–15. DOI: 10.1016/0142-0615(79)90026-7.
 
