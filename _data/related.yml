@@ -147,3 +147,8 @@
   - { title: "计算机系统之旅", url: "/计算机系统之旅.html", lang: "zh-CN" }
   - { title: "C++优化技术", url: "/C++优化技术.html", lang: "zh-CN" }
   - { title: "计算机中的基础数学函数", url: "/计算机中的基础数学函数.html", lang: "zh-CN" }
+
+"founders-of-modern-power-systems.md":
+  - { title: "From Ybus to an Industrial-Grade Power Flow Solver", url: "/ac-power-flow-ybus-newton.html", lang: "en", note: "EN" }
+  - { title: "From the Nelson River to PSCAD and RTDS: Manitoba’s Power-System Simulation Story", url: "/manitoba-hydro-pscad-rtds-history.html", lang: "en", note: "EN" }
+  - { title: "On Power-System State Estimation", url: "/谈谈电力系统状态估计.html", lang: "zh-CN", note: "ZH" }
