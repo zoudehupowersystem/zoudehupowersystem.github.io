@@ -539,7 +539,7 @@ $$
 \tag{A2-3}
 $$
 
-Thus, the prefactor of $K$ in this appendix is $1/3$, and $x_0=(x_a+x_b+x_c)/3$. The scaled transformation remains invertible, with the coefficients in the power expressions adjusted accordingly. Under this normalization, $|x_f|$ for a balanced set of three-phase sinusoidal quantities equals half the phase peak value.
+Thus, the prefactor of $K$ in this appendix is $1/3$, and $x_0=(x_a+x_b+x_c)/3$. The scaled transformation remains invertible, with the coefficients in the power expressions adjusted accordingly. Under this normalization, $\lvert x_f\rvert$ for a balanced set of three-phase sinusoidal quantities equals half the phase peak value.
 
 To avoid confusing phase $b$ with backward coordinate $b$, $x_\ell$ in the sums below always denotes an original three-phase variable, whereas $x_b$ appearing by itself in $(x_f,x_b,x_0)$ denotes the backward coordinate. Where necessary, the two are written as $x_b^{abc}$ and $x_b^K$, respectively.
 
