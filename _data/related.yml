@@ -152,3 +152,8 @@
   - { title: "From Ybus to an Industrial-Grade Power Flow Solver", url: "/ac-power-flow-ybus-newton.html", lang: "en", note: "EN" }
   - { title: "From the Nelson River to PSCAD and RTDS: Manitoba’s Power-System Simulation Story", url: "/manitoba-hydro-pscad-rtds-history.html", lang: "en", note: "EN" }
   - { title: "On Power-System State Estimation", url: "/谈谈电力系统状态估计.html", lang: "zh-CN", note: "ZH" }
+
+"robert-h-park-remarkable-life.md":
+  - { title: "The Founders of Modern Power Systems: Ten Key Pioneers and Additional Candidates", url: "/founders-of-modern-power-systems.html", lang: "en", note: "EN" }
+  - { title: "Understanding Symmetrical Components in Depth", url: "/深入理解对称分量法.html", lang: "zh-CN", note: "ZH" }
+  - { title: "Thoughts on Power-System Control", url: "/电力系统控制的思考.html", lang: "zh-CN", note: "ZH" }
