@@ -13,12 +13,24 @@ permalink: /blog.html
   <link rel="canonical" href="https://zoudehupowersystem.github.io/blog.html" />
   <meta property="og:type" content="website" /><meta property="og:title" content="邹德虎的博客｜电力系统、仿真、计算与工程技术" /><meta property="og:url" content="https://zoudehupowersystem.github.io/blog.html" /><meta property="og:image" content="https://zoudehupowersystem.github.io/zoudehu.jpg" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"邹德虎的博客 · Dehu Zou's Blog","url":"https://zoudehupowersystem.github.io/blog.html","author":{"@type":"Person","@id":"https://zoudehupowersystem.github.io/#dehu-zou","name":"邹德虎","alternateName":"Dehu Zou","url":"https://zoudehupowersystem.github.io/"}}</script>
+  <meta name="theme-color" content="#FFFFFF" />
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('dehu-homepage-theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (error) {}
+    })();
+  </script>
   <style>
     :root{--ink:#172033;--muted:#667085;--line:#dfe6ef;--soft:#f7f9fc;--blue:#155eef;--navy:#17345f}*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","PingFang SC","Microsoft YaHei",sans-serif}.wrap{max-width:1040px;margin:0 auto;padding:32px 22px 70px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:28px}.brand{font-weight:800;color:var(--navy)}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{padding:7px 10px;border:1px solid #cddcff;border-radius:9px;background:#f8fbff;color:#24529a;text-decoration:none;font-size:13px;font-weight:650}.hero{padding:28px;border:1px solid #cddcff;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#f3f7ff);margin-bottom:26px}.hero h1{margin:0 0 10px;font-size:clamp(2rem,5vw,2.8rem);line-height:1.2;color:#102a52}.hero p{margin:0;max-width:72ch;color:var(--muted);line-height:1.8}.groups{display:grid;gap:18px}.group{padding:20px;border:1px solid var(--line);border-radius:16px;background:#fff}.group h2{margin:0 0 5px;font-size:19px;color:#243b60}.desc{color:var(--muted);font-size:13px;line-height:1.65;margin-bottom:13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px 12px}.item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 12px;border:1px solid #e4e9f0;border-radius:11px;background:var(--soft);text-decoration:none;color:#253858;line-height:1.45}.item:hover{border-color:#adc7ff;background:#f0f5ff}.item small{color:#7c8ba1;font-size:11px;font-weight:700;white-space:nowrap}.foot{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:#98a2b3;font-size:12px}@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{padding:22px 16px 50px}.hero{padding:22px}}
   </style>
+  <link rel="stylesheet" href="/assets/site-theme.css" />
+  <script defer src="/assets/site-theme.js"></script>
 </head>
 <body><div class="wrap">
-  <div class="top"><div class="brand">邹德虎的博客 · Dehu Zou's Blog</div><nav class="nav"><a href="/">中文主页</a><a href="/en.html">English Profile</a><a href="/english.html">English Articles</a></nav></div>
+  <div class="top"><div class="brand">邹德虎的博客 · Dehu Zou's Blog</div><nav class="nav"><a href="/">中文主页</a><a href="/en.html">English Profile</a><a href="/english.html">English Articles</a><button type="button" id="theme-toggle" class="site-theme-toggle" aria-pressed="false" aria-label="切换为深色模式"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span class="theme-toggle-text">深色模式</span></button></nav></div>
   <section class="hero"><h1>博客文章目录</h1><p>围绕电力系统机理、数值计算、实时电磁暂态仿真、调度自动化、工业软件与计算机系统进行长期技术写作。文章按主题组织，便于连续阅读和站内交叉引用。</p></section>
   <main class="groups">
     <section class="group"><h2>电力系统原理与计算</h2><div class="desc">物理机理、潮流、牛顿法、短路、对称分量、状态估计、频率与控制。</div><div class="grid">
