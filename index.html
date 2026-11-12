@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>邹德虎（Dehu Zou）｜电力系统仿真、调度自动化、ZRTDB 与 PowerTool</title>
   <meta name="description" content="邹德虎（Dehu Zou），正高级工程师、电力系统研发架构师。长期从事电力系统建模仿真、实时电磁暂态仿真（EMT）、电网调度自动化与工业软件研发；公开维护 ZRTDB 零拷贝实时数据总线与 PowerTool 电力系统工程计算工具。" />
-  <meta name="theme-color" content="#0B1F3A" />
+  <meta name="theme-color" content="#FFFFFF" />
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
   <link rel="me" href="https://orcid.org/0000-0002-3359-0145" />
 
@@ -32,7 +32,7 @@
     "url": "https://zoudehupowersystem.github.io/",
     "name": "邹德虎（Dehu Zou）个人主页",
     "description": "邹德虎（Dehu Zou），正高级工程师、电力系统研发架构师。长期从事电力系统建模仿真、实时电磁暂态仿真（EMT）、电网调度自动化与工业软件研发。",
-    "dateModified": "2026-09-17T17:00:00+08:00",
+    "dateModified": "2026-11-12T09:32:00+08:00",
     "mainEntity": {
       "@type": "Person",
       "@id": "https://zoudehupowersystem.github.io/#dehu-zou",
@@ -57,6 +57,17 @@
   </script>
 
 
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('dehu-homepage-theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          var themeMeta = document.querySelector('meta[name="theme-color"]');
+          if (themeMeta) themeMeta.setAttribute('content', '#0B1220');
+        }
+      } catch (error) { /* private browsing can disable storage */ }
+    })();
+  </script>
   <style>
     :root {
       --bg: #0B1220;
@@ -784,6 +795,111 @@
         text-decoration: underline;
       }
     }
+
+    /* 2026-11: accessible light-first theme with an opt-in dark appearance */
+    html { scroll-behavior: smooth; }
+    html[data-theme="dark"] { color-scheme: dark; }
+    .topbar { flex-wrap: wrap; }
+    .topbar-controls { display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end; margin-left:auto; }
+    .topbar .badge.theme-toggle, .badge.theme-toggle {
+      appearance:none; -webkit-appearance:none; font-family:inherit; font-size:13px;
+      display:inline-flex; align-items:center; gap:8px; min-height:38px; cursor:pointer;
+      color:var(--text); border:1px solid var(--border); border-radius:999px;
+      background:rgba(91,181,255,.10); padding:8px 12px; line-height:1.2;
+    }
+    .theme-toggle-icon { font-size:18px; line-height:1; width:19px; text-align:center; }
+    .theme-toggle:hover { filter:brightness(1.06); }
+    .theme-toggle:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    @media(max-width:600px) { .theme-toggle-text {display:none;} .topbar-controls {gap:7px;} }
+    @media(prefers-reduced-motion:reduce) { html {scroll-behavior:auto;} }
+
+    html:not([data-theme="dark"]) {
+      color-scheme: light;
+      --bg:#ffffff; --panel:#ffffff; --card:#f8fafc; --card-strong:#eef4fb;
+      --border:#dbe4ee; --text:#1a293d; --muted:#45576d; --faint:#61738a;
+      --accent:#165ca8; --accent-2:#10477e; --gold:#91651e;
+      --shadow:0 14px 38px rgba(21,45,73,.08);
+      --shadow-soft:0 7px 22px rgba(21,45,73,.07);
+    }
+    html:not([data-theme="dark"]) body { background:#ffffff; color:var(--text); }
+    html:not([data-theme="dark"]) a { color:var(--accent); }
+    html:not([data-theme="dark"]) a:hover { color:var(--accent-2); }
+    html:not([data-theme="dark"]) .badge,
+    html:not([data-theme="dark"]) .topbar .badge { background:#ffffff; border-color:var(--border); color:var(--muted); }
+    html:not([data-theme="dark"]) .badge.theme-toggle,
+    html:not([data-theme="dark"]) .topbar .badge.theme-toggle { background:#eff6ff; color:#164b85; }
+    html:not([data-theme="dark"]) .panel { background:#ffffff; border-color:var(--border); box-shadow:var(--shadow); }
+    html:not([data-theme="dark"]) .hero {
+      background:radial-gradient(900px 400px at 15% 0%,rgba(71,149,218,.10),transparent 65%),
+                 linear-gradient(180deg,#f8fbff 0%,#ffffff 100%);
+      border-bottom:1px solid var(--border);
+    }
+    html:not([data-theme="dark"]) .avatar { border-color:#d5e1ee; box-shadow:var(--shadow-soft); background:#f3f6fa; }
+    html:not([data-theme="dark"]) .hero-eyebrow,
+    html:not([data-theme="dark"]) .eyebrow { color:#32658d; }
+    html:not([data-theme="dark"]) .name h1 { color:#15243a; }
+    html:not([data-theme="dark"]) .name .en-name { color:#54677c; }
+    html:not([data-theme="dark"]) .name .title,
+    html:not([data-theme="dark"]) .title { background:#eaf3ff; border-color:#b8d4f1; color:#194c80; }
+    html:not([data-theme="dark"]) .subtitle { color:var(--muted); }
+    html:not([data-theme="dark"]) .focus-tag,
+    html:not([data-theme="dark"]) .tag { background:#f3f7fc; border-color:#d9e5f1; color:#405b78; }
+    html:not([data-theme="dark"]) .btn { background:#ffffff; border-color:#cfdce9; color:#254666; box-shadow:none; }
+    html:not([data-theme="dark"]) .btn:hover { background:#f0f6ff; }
+    html:not([data-theme="dark"]) .btn.primary { background:#e8f3ff; border-color:#91bce7; color:#104c87; }
+    html:not([data-theme="dark"]) .kpi { background:#ffffff; border-bottom:1px solid var(--border); }
+    html:not([data-theme="dark"]) .tagline { background:linear-gradient(90deg,#fff9eb,#f4f9ff); border-color:#eadcbc; color:#37465d; }
+    html:not([data-theme="dark"]) .kpi-card { background:linear-gradient(180deg,#ffffff,#f6f9fd); border-color:var(--border); }
+    html:not([data-theme="dark"]) .num,
+    html:not([data-theme="dark"]) .kpi-card .num { color:#16395f; }
+    html:not([data-theme="dark"]) .section h2,
+    html:not([data-theme="dark"]) .article-group-title,
+    html:not([data-theme="dark"]) .group h3,
+    html:not([data-theme="dark"]) strong { color:#192c43; }
+    html:not([data-theme="dark"]) .card { background:#ffffff; border-color:var(--border); }
+    html:not([data-theme="dark"]) p,
+    html:not([data-theme="dark"]) .list { color:#35465d; }
+    html:not([data-theme="dark"]) .article-group,
+    html:not([data-theme="dark"]) .group { background:#f8fafc; border-color:var(--border); }
+    html:not([data-theme="dark"]) .article-group-head,
+    html:not([data-theme="dark"]) .group-head { border-bottom-color:var(--border); }
+    html:not([data-theme="dark"]) .article-item,
+    html:not([data-theme="dark"]) .article-group .article-item,
+    html:not([data-theme="dark"]) .article { background:#ffffff; border-color:#dce5ef; }
+    html:not([data-theme="dark"]) .article-item:hover,
+    html:not([data-theme="dark"]) .article:hover { background:#eef6ff; border-color:#a8cbe8; }
+    html:not([data-theme="dark"]) .article-item span,
+    html:not([data-theme="dark"]) .article span { color:#253b55; }
+    html:not([data-theme="dark"]) .article-item small,
+    html:not([data-theme="dark"]) .article-group .article-item small,
+    html:not([data-theme="dark"]) .article small,
+    html:not([data-theme="dark"]) .article-group-count,
+    html:not([data-theme="dark"]) .count { color:#326a9d; }
+    html:not([data-theme="dark"]) .timeline .item {
+      background:linear-gradient(90deg,#f1f7fd,#ffffff); border-left-color:#77a8d4;
+    }
+    html:not([data-theme="dark"]) .timeline .item .when,
+    html:not([data-theme="dark"]) .when { color:#306a9b; }
+    html:not([data-theme="dark"]) .timeline .item .what,
+    html:not([data-theme="dark"]) .what { color:#30435c; }
+    html:not([data-theme="dark"]) .qr { background:#ffffff; border-color:var(--border); }
+    html:not([data-theme="dark"]) .contact-row { border-bottom-color:#e5ebf3; }
+    html:not([data-theme="dark"]) .contact-value { color:#30435c; }
+    html:not([data-theme="dark"]) .contact-label,
+    html:not([data-theme="dark"]) .fine,
+    html:not([data-theme="dark"]) .section-note,
+    html:not([data-theme="dark"]) .article-group-desc,
+    html:not([data-theme="dark"]) .group-desc,
+    html:not([data-theme="dark"]) .foot { color:var(--faint); }
+    html:not([data-theme="dark"]) details.more { border-top-color:var(--border); }
+    html:not([data-theme="dark"]) details.more summary { color:var(--accent); }
+    html:not([data-theme="dark"]) #opensource h3 { color:#192c43 !important; }
+    html:not([data-theme="dark"]) #opensource p { color:#35465d !important; }
+    @media print {
+      html, html[data-theme="dark"], html:not([data-theme="dark"]) { color-scheme:light; }
+      body, html[data-theme="dark"] body { background:#fff !important; color:#111 !important; }
+      .section h2, .name h1, .list, p, .timeline .item .what { color:#111 !important; }
+    }
   </style>
 </head>
 
@@ -791,9 +907,10 @@
   <div class="wrap">
     <div class="topbar">
       <div class="badge"><span class="dot"></span>个人主页</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <div class="topbar-controls">
         <a class="badge" href="en.html" hreflang="en" lang="en">English</a>
-        <div class="badge">更新时间：<span class="mono">2026-09</span></div>
+        <div class="badge">更新时间：<span class="mono">2026-11</span></div>
+        <button type="button" id="theme-toggle" class="badge theme-toggle" aria-label="切换为深色模式" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span class="theme-toggle-text">深色模式</span></button>
       </div>
     </div>
 
@@ -824,12 +941,12 @@
             </div>
 
             <div class="quick-actions">
-              <a class="btn primary" href="blog.html"><strong>文章</strong><span class="mono">Blog</span></a>
-              <a class="btn" href="https://github.com/zoudehupowersystem/ZRTDB" target="_blank" rel="noopener noreferrer"><strong>ZRTDB</strong><span class="mono">GitHub ↗</span></a>
-              <a class="btn" href="https://github.com/zoudehupowersystem/power_tool" target="_blank" rel="noopener noreferrer"><strong>PowerTool</strong><span class="mono">GitHub ↗</span></a>
-              <a class="btn" href="#experience"><strong>履历</strong><span class="mono">Experience</span></a>
-              <a class="btn" href="#papers"><strong>代表成果</strong><span class="mono">Work</span></a>
-              <a class="btn" href="#contact"><strong>联系</strong><span class="mono">Contact</span></a>
+              <a class="btn primary" href="#education"><strong>教育背景</strong></a>
+              <a class="btn" href="#experience"><strong>工作经历</strong></a>
+              <a class="btn" href="#articles"><strong>博客文章</strong></a>
+              <a class="btn" href="#opensource"><strong>已发布开源项目</strong></a>
+              <a class="btn" href="#papers"><strong>代表论文</strong></a>
+              <a class="btn" href="#contact"><strong>联系</strong></a>
             </div>
           </div>
         </div>
@@ -868,20 +985,49 @@
       </div>
 
       <div class="main">
-        <!-- OPEN SOURCE PROJECTS -->
-        <div class="section" id="opensource">
-          <h2>已发布开源项目</h2>
-          <div class="section-note">以下 GitHub 仓库为项目官方发布源，可直接查看源码、README、版本历史与更新记录。</div>
-          <div class="two-col">
-            <div class="card">
-              <h3 style="margin:0 0 8px;color:rgba(255,255,255,.94);font-size:18px;">ZRTDB <span class="mono" style="font-size:12px;color:var(--faint);">Zero-copy Real-Time Data Bus</span></h3>
-              <p style="margin:0 0 12px;">面向实时控制、SCADA 与工业边缘计算的零拷贝实时数据总线。采用共享内存、静态建模与固定偏移访问，强调确定性时延和工程可运维性。</p>
-              <a class="btn primary" href="https://github.com/zoudehupowersystem/ZRTDB" target="_blank" rel="noopener noreferrer"><strong>访问 ZRTDB 官方 GitHub</strong><span class="mono">zoudehupowersystem/ZRTDB ↗</span></a>
+        <!-- EDUCATION -->
+        <div class="section" id="education">
+          <h2>教育背景</h2>
+          <div class="card timeline">
+            <div class="item">
+              <div class="when">2003–2007</div>
+              <div class="what">南京理工大学，电气工程及其自动化专业，本科</div>
             </div>
-            <div class="card">
-              <h3 style="margin:0 0 8px;color:rgba(255,255,255,.94);font-size:18px;">PowerTool <span class="mono" style="font-size:12px;color:var(--faint);">power_tool</span></h3>
-              <p style="margin:0 0 12px;">面向电力系统工程近似计算、参数换算、波形分析、稳定性分析与快速校核的轻量桌面工具，提供中英文 GUI。</p>
-              <a class="btn primary" href="https://github.com/zoudehupowersystem/power_tool" target="_blank" rel="noopener noreferrer"><strong>访问 PowerTool 官方 GitHub</strong><span class="mono">zoudehupowersystem/power_tool ↗</span></a>
+            <div class="item">
+              <div class="when">2008–2010</div>
+              <div class="what">南京理工大学，电力系统及其自动化专业，硕士（入学成绩专业第1名；毕业论文获江苏省优秀硕士论文）</div>
+            </div>
+            <div class="item">
+              <div class="when">2018–至今</div>
+              <div class="what">东南大学，非全日制工程博士</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXPERIENCE -->
+        <div class="section" id="experience">
+          <h2>工作经历</h2>
+          <div class="card timeline">
+            <div class="item">
+              <div class="when">2007–2008</div>
+              <div class="what">国网安徽马鞍山供电公司：500kV 当涂变电站运维值班。</div>
+            </div>
+            <div class="item">
+              <div class="when">2010–2013</div>
+              <div class="what">助理工程师，国电南瑞科技股份有限公司（电网分公司）：调度自动化系统 OPEN-3000、D5000 工程实施维护；累计近 100
+                个调度中心现场工程经验。</div>
+            </div>
+            <div class="item">
+              <div class="when">2013–2017</div>
+              <div class="what">工程师/高级工程师，国电南瑞科技股份有限公司（系统研发中心）：从事 D5000 研发；参与成果《面向城市骨干电网广域层次化自愈系统关键技术及应用》（第2完成人），经中国电机工程学会鉴定为“整体达到国际领先水平”。据公司 2017 年财务统计，本人主持研发的部分产品新增销售额 11104.15 万元、新增利润 3822 万元。</div>
+            </div>
+            <div class="item">
+              <div class="when">2018–2020.02</div>
+              <div class="what">高级工程师，南瑞研究院产业研究中心：参与南瑞集团战略技术规划制定；从事主动配电网与微网规划仿真研究。</div>
+            </div>
+            <div class="item">
+              <div class="when">2020.02–至今</div>
+              <div class="what">东南大学专职科研人员；江苏鲲游能源技术有限公司技术总监（2026年晋升为江苏省电力工程专业正高级工程师）。主持研发国产自主可控电力系统实时电磁仿真平台 ADS-RTSim（工业级 C++，代码规模 50 万+）；平台已产品化，并在江苏、浙江、贵州等多个电网工程应用。</div>
             </div>
           </div>
         </div>
@@ -1040,49 +1186,20 @@
           </div>
         </div>
 
-        <!-- EDUCATION -->
-        <div class="section" id="education">
-          <h2>教育背景</h2>
-          <div class="card timeline">
-            <div class="item">
-              <div class="when">2003–2007</div>
-              <div class="what">南京理工大学，电气工程及其自动化专业，本科</div>
+        <!-- OPEN SOURCE PROJECTS -->
+        <div class="section" id="opensource">
+          <h2>已发布开源项目</h2>
+          <div class="section-note">以下 GitHub 仓库为项目官方发布源，可直接查看源码、README、版本历史与更新记录。</div>
+          <div class="two-col">
+            <div class="card">
+              <h3 style="margin:0 0 8px;color:rgba(255,255,255,.94);font-size:18px;">ZRTDB <span class="mono" style="font-size:12px;color:var(--faint);">Zero-copy Real-Time Data Bus</span></h3>
+              <p style="margin:0 0 12px;">面向实时控制、SCADA 与工业边缘计算的零拷贝实时数据总线。采用共享内存、静态建模与固定偏移访问，强调确定性时延和工程可运维性。</p>
+              <a class="btn primary" href="https://github.com/zoudehupowersystem/ZRTDB" target="_blank" rel="noopener noreferrer"><strong>访问 ZRTDB 官方 GitHub</strong><span class="mono">zoudehupowersystem/ZRTDB ↗</span></a>
             </div>
-            <div class="item">
-              <div class="when">2008–2010</div>
-              <div class="what">南京理工大学，电力系统及其自动化专业，硕士（入学成绩专业第1名；毕业论文获江苏省优秀硕士论文）</div>
-            </div>
-            <div class="item">
-              <div class="when">2018–至今</div>
-              <div class="what">东南大学，非全日制工程博士</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- EXPERIENCE -->
-        <div class="section" id="experience">
-          <h2>工作经历</h2>
-          <div class="card timeline">
-            <div class="item">
-              <div class="when">2007–2008</div>
-              <div class="what">国网安徽马鞍山供电公司：500kV 当涂变电站运维值班。</div>
-            </div>
-            <div class="item">
-              <div class="when">2010–2013</div>
-              <div class="what">助理工程师，国电南瑞科技股份有限公司（电网分公司）：调度自动化系统 OPEN-3000、D5000 工程实施维护；累计近 100
-                个调度中心现场工程经验。</div>
-            </div>
-            <div class="item">
-              <div class="when">2013–2017</div>
-              <div class="what">工程师/高级工程师，国电南瑞科技股份有限公司（系统研发中心）：从事 D5000 研发；参与成果《面向城市骨干电网广域层次化自愈系统关键技术及应用》（第2完成人），经中国电机工程学会鉴定为“整体达到国际领先水平”。据公司 2017 年财务统计，本人主持研发的部分产品新增销售额 11104.15 万元、新增利润 3822 万元。</div>
-            </div>
-            <div class="item">
-              <div class="when">2018–2020.02</div>
-              <div class="what">高级工程师，南瑞研究院产业研究中心：参与南瑞集团战略技术规划制定；从事主动配电网与微网规划仿真研究。</div>
-            </div>
-            <div class="item">
-              <div class="when">2020.02–至今</div>
-              <div class="what">东南大学专职科研人员；江苏鲲游能源技术有限公司技术总监（2026年晋升为江苏省电力工程专业正高级工程师）。主持研发国产自主可控电力系统实时电磁仿真平台 ADS-RTSim（工业级 C++，代码规模 50 万+）；平台已产品化，并在江苏、浙江、贵州等多个电网工程应用。</div>
+            <div class="card">
+              <h3 style="margin:0 0 8px;color:rgba(255,255,255,.94);font-size:18px;">PowerTool <span class="mono" style="font-size:12px;color:var(--faint);">power_tool</span></h3>
+              <p style="margin:0 0 12px;">面向电力系统工程近似计算、参数换算、波形分析、稳定性分析与快速校核的轻量桌面工具，提供中英文 GUI。</p>
+              <a class="btn primary" href="https://github.com/zoudehupowersystem/power_tool" target="_blank" rel="noopener noreferrer"><strong>访问 PowerTool 官方 GitHub</strong><span class="mono">zoudehupowersystem/power_tool ↗</span></a>
             </div>
           </div>
         </div>
@@ -1223,6 +1340,31 @@
       </div>
     </div>
   </div>
+  <script>
+    (function () {
+      const button = document.getElementById('theme-toggle');
+      if (!button) return;
+      const root = document.documentElement;
+      const meta = document.querySelector('meta[name="theme-color"]');
+      const icon = button.querySelector('.theme-toggle-icon');
+      const label = button.querySelector('.theme-toggle-text');
+      function refreshThemeControl() {
+        const dark = root.getAttribute('data-theme') === 'dark';
+        button.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        button.setAttribute('aria-label', dark ? '切换为浅色模式' : '切换为深色模式');
+        icon.textContent = dark ? '☀' : '☾';
+        label.textContent = dark ? '浅色模式' : '深色模式';
+        if (meta) meta.setAttribute('content', dark ? '#0B1220' : '#FFFFFF');
+      }
+      button.addEventListener('click', function () {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('dehu-homepage-theme', next); } catch (error) {}
+        refreshThemeControl();
+      });
+      refreshThemeControl();
+    })();
+  </script>
 </body>
 
 </html>
